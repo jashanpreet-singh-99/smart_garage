@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_garage/activities/home_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({
@@ -22,9 +23,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: ElevatedButton(
               onPressed: () {
                 // next page
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                );
               },
-              child: const Text('Next page'))),
+              child: const Text('Sign up'))),
     );
   }
 }
