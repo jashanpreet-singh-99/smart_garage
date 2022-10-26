@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   var currentTabs = [
     const DashPage(),
     const DoorPage(),
-    LightingPage(),
+    const LightingPage(),
     UserPage(),
   ];
 
