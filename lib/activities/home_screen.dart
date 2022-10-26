@@ -19,7 +19,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var currentTabs = [
-    DashPage(),
+    const DashPage(),
     DoorPage(),
     LightingPage(),
     UserPage(),
