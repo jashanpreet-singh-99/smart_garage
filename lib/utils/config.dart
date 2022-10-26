@@ -44,4 +44,11 @@ class Config {
     }
     return "OFF";
   }
+
+  int getSwitchInt(String value) {
+    if (value == "ON") {
+      return 1;
+    }
+    return 0;
+  }
 }
