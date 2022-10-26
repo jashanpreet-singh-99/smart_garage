@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.smart_garage">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
    <application
         android:label="smart_garage"
         android:name="${applicationName}"
