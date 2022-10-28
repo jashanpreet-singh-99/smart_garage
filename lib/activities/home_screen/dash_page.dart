@@ -96,7 +96,7 @@ class _DashPageState extends State<DashPage> {
                           Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text('Occupancy'),
                                 Text(occupancy),
@@ -106,7 +106,7 @@ class _DashPageState extends State<DashPage> {
                           Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text('Garage Door Status'),
                                 Text(garageDoorStatus),
@@ -116,7 +116,7 @@ class _DashPageState extends State<DashPage> {
                           Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text('Driveway Lights'),
                                 Text(drivewayLights),
@@ -126,7 +126,7 @@ class _DashPageState extends State<DashPage> {
                           Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text('Garage Indoor Lights'),
                                 Text(garageIndoorLights),
@@ -136,7 +136,7 @@ class _DashPageState extends State<DashPage> {
                           Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: const [
                                 Text('CO Level Inside Garage'),
                               ],

@@ -97,20 +97,24 @@ class _LightingPageState extends State<LightingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-      child: Card(
+
+          child: Card(
         elevation: 50,
         shadowColor: Colors.black,
-        child: SizedBox(
+
+            child: SizedBox(
           width: 300,
           height: 640,
           child: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Column(
+
+            child: SingleChildScrollView(
+             child: Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Light Front Left"),
                       ElevatedButton(
@@ -124,7 +128,7 @@ class _LightingPageState extends State<LightingPage> {
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Light Front Right"),
                       ElevatedButton(
@@ -138,7 +142,7 @@ class _LightingPageState extends State<LightingPage> {
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Light Middle Left"),
                       ElevatedButton(
@@ -152,7 +156,7 @@ class _LightingPageState extends State<LightingPage> {
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Light Middle Middle"),
                       ElevatedButton(
@@ -166,7 +170,7 @@ class _LightingPageState extends State<LightingPage> {
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Light Middle Right"),
                       ElevatedButton(
@@ -180,7 +184,7 @@ class _LightingPageState extends State<LightingPage> {
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Light Rear Left"),
                       ElevatedButton(
@@ -194,7 +198,7 @@ class _LightingPageState extends State<LightingPage> {
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Light Rear Middle"),
                       ElevatedButton(
@@ -206,9 +210,9 @@ class _LightingPageState extends State<LightingPage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all( 10.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Light Rear Right"),
                       ElevatedButton(
@@ -220,9 +224,10 @@ class _LightingPageState extends State<LightingPage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all( 10.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Light Driveway"),
                       ElevatedButton(
@@ -235,9 +240,11 @@ class _LightingPageState extends State<LightingPage> {
                 ),
               ],
             ),
+            ),
           ),
         ),
       ),
+
     ));
   }
 }

@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:smart_garage/activities/register_screen.dart';
+import 'package:smart_garage/activities/login_screen.dart';
+import 'package:smart_garage/activities/login_screen1.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({
@@ -19,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(milliseconds: 1000), () {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const RegisterScreen()),
+        MaterialPageRoute(builder: (context) =>  LoginScreenA()),
       );
     });
   }
