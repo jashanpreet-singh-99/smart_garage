@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 
 class Config {
   Uri testUrlLights = Uri.parse("http://4.229.225.201/Lights");
   Uri testUrlDoor = Uri.parse("http://4.229.225.201/Door");
+  Uri testUrlCo = Uri.parse("http://4.229.225.201/Co");
 
   String getOccupanyValue(String value) {
     if (value == "0") {
@@ -11,10 +13,11 @@ class Config {
     return "FULL";
   }
 
-  String getDoorValue(String value) {
-    if (value == "0") {
+  String getDoorValue(String v) {
+    int value = int.parse(v);
+    if (value == 0) {
       return "STOPPED";
-    } else if (value == "-1") {
+    } else if (value == -1) {
       return "CLOSED";
     }
     return "OPEN";
@@ -74,5 +77,16 @@ class Config {
       return 1;
     }
     return 0;
+  }
+
+  Color getCoColor(double level) {
+    if (level > 0.50) {
+      return Colors.red;
+    } else if (level > 0.25) {
+      return Colors.orange;
+    } else if (level > 0.10) {
+      return Colors.yellow;
+    }
+    return Colors.green;
   }
 }

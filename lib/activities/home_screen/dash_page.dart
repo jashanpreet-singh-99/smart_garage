@@ -19,6 +19,7 @@ class _DashPageState extends State<DashPage> {
   String drivewayLights = "OFF";
   String garageIndoorLights = "OFF";
   double coLevel = 0.1;
+  Color coColor = Colors.green;
 
   void getDoorStatus() async {
     final uri = Config().testUrlDoor;
@@ -34,7 +35,7 @@ class _DashPageState extends State<DashPage> {
     print(statusCode);
     print('RES: .$responseBody.');
     setState(() {
-      garageDoorStatus = Config().getDoorValue(responseBody[0]);
+      garageDoorStatus = Config().getDoorValue(responseBody);
     });
   }
 
@@ -57,11 +58,31 @@ class _DashPageState extends State<DashPage> {
     });
   }
 
+  void getCoValue() async {
+    final uri = Config().testUrlCo;
+    final headers = {'Content-Type': 'application/json'};
+
+    http.Response response = await http.get(
+      uri,
+      headers: headers,
+    );
+
+    int statusCode = response.statusCode;
+    String responseBody = response.body;
+    print(statusCode);
+    print('RES: .$responseBody.');
+    setState(() {
+      coLevel = double.parse(responseBody) / 100;
+      coColor = Config().getCoColor(coLevel);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     getDoorStatus();
     getLights();
+    getCoValue();
   }
 
   @override
@@ -148,7 +169,9 @@ class _DashPageState extends State<DashPage> {
                             child: LinearProgressIndicator(
                               minHeight: 10,
                               value: coLevel,
-                              backgroundColor: Colors.green,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(coColor),
+                              backgroundColor: Colors.grey,
                             ),
                           ),
                         ],
