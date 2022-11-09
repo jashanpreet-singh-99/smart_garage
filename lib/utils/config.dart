@@ -51,6 +51,13 @@ class Config {
     return "OFF";
   }
 
+  String getSwitchValueInt(int value) {
+    if (value == 1) {
+      return "ON";
+    }
+    return "OFF";
+  }
+
   String getSwitchValueJson(String data, String light) {
     final body = json.decode(data);
     int value = body[light];
@@ -58,6 +65,15 @@ class Config {
       return "ON";
     }
     return "OFF";
+  }
+
+  List<String> getSwitchValueList(String data, List<String> list) {
+    final body = json.decode(data);
+    list[0] = getSwitchValueInt(body["LightL"]);
+    list[1] = getSwitchValueInt(body["LightM"]);
+    list[2] = getSwitchValueInt(body["LightR"]);
+    list[3] = getSwitchValueInt(body["LightExt"]);
+    return list;
   }
 
   String getSwitchValueIndoorJson(String data) {
