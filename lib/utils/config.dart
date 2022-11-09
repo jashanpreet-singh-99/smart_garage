@@ -1,7 +1,8 @@
+import 'dart:convert';
+
 class Config {
   Uri testUrlLights = Uri.parse("http://4.229.225.201/Lights");
   Uri testUrlDoor = Uri.parse("http://4.229.225.201/Door");
-  Uri testUrlDoorStop = Uri.parse("http://4.229.225.201/DoorStop");
 
   String getOccupanyValue(String value) {
     if (value == "0") {
@@ -12,7 +13,9 @@ class Config {
 
   String getDoorValue(String value) {
     if (value == "0") {
-      return "CLOSE";
+      return "STOPPED";
+    } else if (value == "-1") {
+      return "CLOSED";
     }
     return "OPEN";
   }
@@ -40,6 +43,27 @@ class Config {
 
   String getSwitchValue(String value) {
     if (value == "1") {
+      return "ON";
+    }
+    return "OFF";
+  }
+
+  String getSwitchValueJson(String data, String light) {
+    final body = json.decode(data);
+    int value = body[light];
+    if (value == 1) {
+      return "ON";
+    }
+    return "OFF";
+  }
+
+  String getSwitchValueIndoorJson(String data) {
+    final body = json.decode(data);
+    int valueL = body["LightL"];
+    int valueM = body["LightM"];
+    int valueR = body["LightR"];
+    int value = valueL + valueM + valueR;
+    if (value > 0) {
       return "ON";
     }
     return "OFF";

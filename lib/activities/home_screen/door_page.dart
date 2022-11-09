@@ -58,27 +58,6 @@ class _DoorPageState extends State<DoorPage> {
     });
   }
 
-  void stopDoor() async {
-    final uri = Config().testUrlDoorStop;
-    final headers = {'Content-Type': 'application/json', 'Status': garageLock};
-
-    http.Response response = await http.put(
-      uri,
-      headers: headers,
-    );
-
-    int statusCode = response.statusCode;
-    String responseBody = response.body;
-    print(statusCode);
-    print('RES: .$responseBody.');
-    String status = Config().getDoorLockValue(
-        ((Config().getDoorLockInt(garageLock) + 1) % 2).toString());
-    setState(() {
-      garageLock = status;
-      resultDebug = responseBody;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -114,7 +93,6 @@ class _DoorPageState extends State<DoorPage> {
                     child: ElevatedButton(
                       onPressed: () {
                         // Open or Close door
-                        stopDoor();
                       },
                       child: Text(garageLock),
                     ),
