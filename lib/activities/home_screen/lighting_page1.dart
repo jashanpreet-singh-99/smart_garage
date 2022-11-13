@@ -1,6 +1,4 @@
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
+/** import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:smart_garage/utils/config.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -18,42 +16,18 @@ class LightingPage extends StatefulWidget {
 }
 
 class _LightingPageState extends State<LightingPage> {
-  int lightL = 0;
-  int lightR = 0;
-  int lightM = 0;
-  int lightExt = 1;
+  String lightFL = "OFF";
+  String lightFR = "OFF";
+  String lightML = "OFF";
+  String lightMM = "OFF";
+  String lightMR = "OFF";
+  String lightRL = "OFF";
+  String lightRM = "OFF";
+  String lightRR = "OFF";
+  String lightExt = "OFF";
 
   late List<String> lights = [];
 
-  void getLightStatus() async {
-    final uri = Config().getUrlLight;
-    final headers = {'Content-Type': 'application/json'};
-
-    http.Response response = await http.get(
-      uri,
-      headers: headers,
-    );
-
-    int statusCode = response.statusCode;
-    final responseBody = jsonDecode(response.body);
-    print(statusCode);
-    print('RES: .$responseBody.');
-
-    String light_Ext = responseBody['Light_Ext'];
-    String light_L = responseBody['Light_L'];
-    String light_M = responseBody['Light_M'];
-    String light_R = responseBody['Light_R'];
-
-    setState(() {
-      lightExt = int.parse(light_Ext);
-      lightL = int.parse(light_L);
-      lightM = int.parse(light_M);
-      lightR = int.parse(light_R);
-    });
-  }
-
-/**
-//get light old
   void getLight(String light, int varLight) async {
     final uri = Config().testUrlLights;
     final headers = {'Content-Type': 'application/json', 'Light': light};
@@ -71,27 +45,7 @@ class _LightingPageState extends State<LightingPage> {
       lights[varLight] = Config().getSwitchValue(responseBody[0]);
     });
   }
-  **/
-  // new change light
-  void changeLightStatus(String light, int varLight) async {
-    final uri = Config().getUrlLight;
-    final headers = {
-      'Content-Type': 'application/json',
-    };
 
-    final body = {'Light': light, 'Value': varLight};
-
-    http.Response response = await http.put(uri, headers: headers, body: body);
-
-    int statusCode = response.statusCode;
-    String responseBody = response.body;
-    print(statusCode);
-    print('RES: .$responseBody.');
-    setState(() {});
-  }
-
-/**
-//change light old
   void changeLight(String light, int varLight) async {
     String value = Config().getSwitchValue(
         ((Config().getSwitchInt(lights[varLight]) + 1) % 2).toString());
@@ -102,7 +56,6 @@ class _LightingPageState extends State<LightingPage> {
       'Content-Type': 'application/json',
       'Light': light,
       'Value': val.toString()
-
     };
 
     http.Response response = await http.put(
@@ -117,13 +70,11 @@ class _LightingPageState extends State<LightingPage> {
     setState(() {
       lights[varLight] = value;
     });
-  }**/
+  }
 
   @override
   void initState() {
     super.initState();
-    getLightStatus();
-    /**
     lights.add(lightFL);
     lights.add(lightFR);
     lights.add(lightML);
@@ -142,7 +93,6 @@ class _LightingPageState extends State<LightingPage> {
     getLight("Light_R_M", 6);
     getLight("Light_R_R", 7);
     getLight("Light_Ext", 8);
-        **/
   }
 
   @override
@@ -150,20 +100,20 @@ class _LightingPageState extends State<LightingPage> {
     return Scaffold(
         body: Center(
       child: Card(
+
         elevation: 100,
         shadowColor: Colors.black,
         child: SizedBox(
           width: 300,
           height: 640,
           child: Padding(
+
             //padding: const EdgeInsets.all(10.0),
-            padding: const EdgeInsets.only(top: 60.0),
+            padding: const EdgeInsets.only(top:150.0),
             child: SingleChildScrollView(
+
               child: Column(
                 children: [
-                  Image.asset(
-                    'assets/light_icon.png',
-                  ),
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Row(
@@ -173,7 +123,7 @@ class _LightingPageState extends State<LightingPage> {
                         ToggleSwitch(
                           minWidth: 50.0,
                           minHeight: 50.0,
-                          initialLabelIndex: lightExt,
+                          initialLabelIndex: 0,
                           cornerRadius: 20.0,
                           activeFgColor: Colors.white,
                           inactiveBgColor: Colors.grey,
@@ -193,13 +143,6 @@ class _LightingPageState extends State<LightingPage> {
                           curve: Curves
                               .bounceInOut, // animate must be set to true when using custom curve
                           onToggle: (index) {
-                            if (index == 1) {
-                              print('switched to: $index');
-                              changeLightStatus("Light_Ext", 1);
-                            } else if (index == 0) {
-                              print('switched to: $index');
-                              changeLightStatus("Light_Ext", 0);
-                            }
                             //print('switched to: $index');
                           },
                         ),
@@ -215,7 +158,7 @@ class _LightingPageState extends State<LightingPage> {
                         ToggleSwitch(
                           minWidth: 50.0,
                           minHeight: 50.0,
-                          initialLabelIndex: lightL,
+                          initialLabelIndex: 0,
                           cornerRadius: 20.0,
                           activeFgColor: Colors.white,
                           inactiveBgColor: Colors.grey,
@@ -235,13 +178,6 @@ class _LightingPageState extends State<LightingPage> {
                           curve: Curves
                               .bounceInOut, // animate must be set to true when using custom curve
                           onToggle: (index) {
-                            if (index == 1) {
-                              print('switched to: $index');
-                              changeLightStatus("Light_L", 1);
-                            } else if (index == 0) {
-                              print('switched to: $index');
-                              changeLightStatus("Light_L", 0);
-                            }
                             //print('switched to: $index');
                           },
                         ),
@@ -257,7 +193,7 @@ class _LightingPageState extends State<LightingPage> {
                         ToggleSwitch(
                           minWidth: 50.0,
                           minHeight: 50.0,
-                          initialLabelIndex: lightM,
+                          initialLabelIndex: 0,
                           cornerRadius: 20.0,
                           activeFgColor: Colors.white,
                           inactiveBgColor: Colors.grey,
@@ -277,13 +213,6 @@ class _LightingPageState extends State<LightingPage> {
                           curve: Curves
                               .bounceInOut, // animate must be set to true when using custom curve
                           onToggle: (index) {
-                            if (index == 1) {
-                              print('switched to: $index');
-                              changeLightStatus("Light_M", 1);
-                            } else if (index == 0) {
-                              print('switched to: $index');
-                              changeLightStatus("Light_M", 0);
-                            }
                             //print('switched to: $index');
                           },
                         ),
@@ -299,7 +228,7 @@ class _LightingPageState extends State<LightingPage> {
                         ToggleSwitch(
                           minWidth: 50.0,
                           minHeight: 50.0,
-                          initialLabelIndex: lightR,
+                          initialLabelIndex: 0,
                           cornerRadius: 20.0,
                           activeFgColor: Colors.white,
                           inactiveBgColor: Colors.grey,
@@ -319,13 +248,6 @@ class _LightingPageState extends State<LightingPage> {
                           curve: Curves
                               .bounceInOut, // animate must be set to true when using custom curve
                           onToggle: (index) {
-                            if (index == 1) {
-                              print('switched to: $index');
-                              changeLightStatus("Light_R", 1);
-                            } else if (index == 0) {
-                              print('switched to: $index');
-                              changeLightStatus("Light_R", 0);
-                            }
                             //print('switched to: $index');
                           },
                         ),
@@ -340,4 +262,4 @@ class _LightingPageState extends State<LightingPage> {
       ),
     ));
   }
-}
+}**/

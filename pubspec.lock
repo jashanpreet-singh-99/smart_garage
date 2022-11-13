@@ -13,10 +13,18 @@ packages:
     dependency: transitive
     description:
       name: another_transformer_page_view
-      sha256: "0b06f2564a7e38c3277a01b28cf10a9c457c52dfa01ef4ff8853986131db1b95"
+      sha256: a7cd46ede62d621c5abe7e58c7cb2745abe67b3bfec64f59b8889c93d7be7a8e
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
+  archive:
+    dependency: transitive
+    description:
+      name: archive
+      sha256: "76d919e063a09d19d61f99463a20dba1c1e8d0bc3a5eba91bac2853fac095373"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.3.4"
   async:
     dependency: transitive
     description:
@@ -57,6 +65,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.17.0"
+  convert:
+    dependency: transitive
+    description:
+      name: convert
+      sha256: "0f08b14755d163f6e2134cb58222dd25ea2a2ee8a195e53983d57c075324d592"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.1"
+  crypto:
+    dependency: transitive
+    description:
+      name: crypto
+      sha256: aa274aa7774f8964e4f4f38cc994db7b6158dd36e9187aaceaddc994b35c6c67
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.2"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -78,6 +102,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_gif:
+    dependency: "direct main"
+    description:
+      name: flutter_gif
+      sha256: b13d7e484e40685e9236ffbaddf012c2448a2e2c1ac48bed345184dd7bc87f88
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -90,10 +122,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_login
-      sha256: "070a2838a8c1b202a36d49c00cc4161bd4581f2c3243dfe3ac74069d3f4a707f"
+      sha256: "739665c29416928739f320366132e64c5dc4d755ca1c51f925629a1d84b9f4ef"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.0"
+    version: "4.1.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -105,7 +137,7 @@ packages:
     source: sdk
     version: "0.0.0"
   font_awesome_flutter:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: font_awesome_flutter
       sha256: "8f0ce0204bd0cafa8631536a6f3b7d05d9c16cdc6e8bd807843f917027c5cefd"
@@ -144,6 +176,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  lottie:
+    dependency: "direct main"
+    description:
+      name: lottie
+      sha256: "9e3c5424008322b83b45c9adcfa4c96dc3e9306c7e82c0ba22fa189a40980cb5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   matcher:
     dependency: transitive
     description:
@@ -192,6 +232,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.3"
+  pointycastle:
+    dependency: transitive
+    description:
+      name: pointycastle
+      sha256: db7306cf0249f838d1a24af52b5a5887c5bf7f31d8bb4e827d071dc0939ad346
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.6.2"
   provider:
     dependency: "direct main"
     description:
@@ -212,10 +260,10 @@ packages:
     dependency: transitive
     description:
       name: sign_in_button
-      sha256: "6a4d26b5ad353f56c33ae7ab4f612b9a7f2e4e68765a956284ff7a17257a638d"
+      sha256: e4f7b828f9388e180622ed25b20c066492c596df89cce4c641c294741b48a081
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "3.1.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -269,6 +317,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.14"
+  toggle_switch:
+    dependency: "direct main"
+    description:
+      name: toggle_switch
+      sha256: "82c778c4bfe93af154a41e346ccd1d5b0cb6a50f8f187941412edd0a9bbf51ee"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   typed_data:
     dependency: transitive
     description:
@@ -289,10 +345,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: "642556231286233c1c12b4d5eae899c408628506a8fe367cf95309e360a6217d"
+      sha256: "2514dc16ac169adf55159268d7bf70317d9f2fc9ef5bb02020bb7ad710c0aeb4"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.20"
+    version: "6.0.21"
   url_launcher_ios:
     dependency: transitive
     description:
@@ -351,4 +407,4 @@ packages:
     version: "2.1.4"
 sdks:
   dart: ">=2.18.2 <4.0.0"
-  flutter: ">=2.10.0"
+  flutter: ">=3.3.0"

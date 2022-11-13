@@ -39,6 +39,10 @@ dependencies:
   provider: ^6.0.4
   http: ^0.13.5
   flutter_login: ^4.0.0
+  lottie: ^2.0.0
+  flutter_gif: ^0.0.4
+  toggle_switch: ^2.0.1
+  font_awesome_flutter: ^10.2.1
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +67,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/garage.png
+    - assets/light_icon.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -3,7 +3,15 @@ class Config {
   Uri testUrlDoor = Uri.parse("http://4.229.225.201/Door");
   Uri testUrlDoorStop = Uri.parse("http://4.229.225.201/DoorStop");
 
-  String getOccupanyValue(String value) {
+  Uri getGarageData = Uri.parse("http://4.229.225.201/get_garage_data");
+  Uri getUrlDoor = Uri.parse("http://4.229.225.201/get_door");
+  Uri getUrlLight = Uri.parse("http://4.229.225.201/get_lights");
+  Uri getUrlCo = Uri.parse("http://4.229.225.201/get_co");
+  Uri setUrlLight = Uri.parse("http://4.229.225.201/set_light");
+  Uri setUrlDoor = Uri.parse("http://4.229.225.201/set_door");
+
+
+  String getOccupancyValue(String value) {
     if (value == "0") {
       return "EMPTY";
     }
@@ -14,7 +22,10 @@ class Config {
     if (value == "0") {
       return "CLOSE";
     }
-    return "OPEN";
+    if (value == "1") {
+      return "OPEN";
+    }
+    return "LOCK";
   }
 
   int getDoorInt(String value) {

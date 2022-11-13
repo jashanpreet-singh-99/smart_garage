@@ -4,7 +4,7 @@ import 'home_screen.dart';
 
 const users = const {
   'smartgarage@gmail.com': '12345',
-  'hunter@gmail.com': 'hunter',
+  '1111': '1111',
 };
 
 class LoginScreenA extends StatelessWidget {
