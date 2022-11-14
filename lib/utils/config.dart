@@ -16,9 +16,9 @@ class Config {
   String getDoorValue(String v) {
     int value = int.parse(v);
     if (value == 0) {
-      return "STOPPED";
+      return "STOP";
     } else if (value == -1) {
-      return "CLOSED";
+      return "CLOSE";
     }
     return "OPEN";
   }

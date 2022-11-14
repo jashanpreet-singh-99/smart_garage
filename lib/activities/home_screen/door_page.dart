@@ -14,9 +14,11 @@ class DoorPage extends StatefulWidget {
 }
 
 class _DoorPageState extends State<DoorPage> {
-  String garageDoorStatus = "CLOSED";
-  String garageLock = "LOCK";
+  Color garageOpenBtn = Colors.grey;
+  Color garageStopBtn = Colors.grey;
+  Color garageCloseBtn = Colors.grey;
   String resultDebug = "";
+  String stat = "CLOSE";
 
   void getDoorStatus() async {
     final uri = Config().testUrlDoor;
@@ -31,14 +33,39 @@ class _DoorPageState extends State<DoorPage> {
     String responseBody = response.body;
     print(statusCode);
     print('RES: .$responseBody.');
+    String nStat = Config().getDoorValue(responseBody);
     setState(() {
-      garageDoorStatus = Config().getDoorValue(responseBody[0]);
+      setBtnColors(nStat);
     });
   }
 
-  void openCloseDoor() async {
-    String command = Config().getDoorValue(
-        ((Config().getDoorInt(garageDoorStatus) + 1) % 2).toString());
+  void setBtnColors(String nStat) {
+    switch (stat) {
+      case "STOP":
+        garageStopBtn = Colors.grey;
+        break;
+      case "CLOSE":
+        garageCloseBtn = Colors.grey;
+        break;
+      default:
+        garageOpenBtn = Colors.grey;
+        break;
+    }
+    switch (nStat) {
+      case "STOP":
+        garageStopBtn = Colors.cyan;
+        break;
+      case "CLOSE":
+        garageCloseBtn = Colors.cyan;
+        break;
+      default:
+        garageOpenBtn = Colors.cyan;
+        break;
+    }
+    stat = nStat;
+  }
+
+  void openCloseDoor(String command) async {
     final uri = Config().testUrlDoor;
     final headers = {'Content-Type': 'application/json', 'Command': command};
 
@@ -52,9 +79,8 @@ class _DoorPageState extends State<DoorPage> {
     print(statusCode);
     print('RES: .$responseBody.');
     setState(() {
-      garageDoorStatus = command;
-      garageLock = 'LOCK';
       resultDebug = responseBody;
+      setBtnColors(command);
     });
   }
 
@@ -82,19 +108,42 @@ class _DoorPageState extends State<DoorPage> {
                     padding: const EdgeInsets.all(10.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        // Open or Close door
-                        openCloseDoor();
+                        // Open door
+                        openCloseDoor("OPEN");
                       },
-                      child: Text(garageDoorStatus),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(garageOpenBtn),
+                      ),
+                      child: const Text("OPEN"),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        // Open or Close door
+                        // Stop door
+                        openCloseDoor("STOP");
                       },
-                      child: Text(garageLock),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(garageStopBtn),
+                      ),
+                      child: const Text("STOP"),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Close door
+                        openCloseDoor("CLOSE");
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(garageCloseBtn),
+                      ),
+                      child: const Text("CLOSE"),
                     ),
                   ),
                   Padding(
