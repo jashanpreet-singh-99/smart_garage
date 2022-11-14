@@ -86,15 +86,36 @@ class Config {
     return Colors.green;
   }
 
+  String getSwitchValueInt(int value) {
+    if (value == 1) {
+      return "ON";
+    }
+    return "OFF";
+  }
+
+  List<String> getSwitchValueList(String data, List<String> list) {
+    final body = json.decode(data);
+    list[0] = getSwitchValueInt(body["Light_L"]);
+    list[1] = getSwitchValueInt(body["Light_M"]);
+    list[2] = getSwitchValueInt(body["Light_R"]);
+    list[3] = getSwitchValueInt(body["Light_Ext"]);
+    return list;
+  }
+
   String getSwitchValueIndoorJson(String data) {
     final body = json.decode(data);
-    int valueL = body["LightL"];
-    int valueM = body["LightM"];
-    int valueR = body["LightR"];
+    int valueL = body["Light_L"];
+    int valueM = body["Light_M"];
+    int valueR = body["Light_R"];
     int value = valueL + valueM + valueR;
     if (value > 0) {
       return "ON";
     }
     return "OFF";
+  }
+
+  double getCoLevelJson(String data) {
+    final body = json.decode(data);
+    return body["CO"] / 100;
   }
 }

@@ -40,7 +40,7 @@ class _DashPageState extends State<DashPage> {
   }
 
   void getLights() async {
-    final uri = Config().testUrlLights;
+    final uri = Config().getUrlLight;
     final headers = {'Content-Type': 'application/json'};
 
     http.Response response = await http.get(
@@ -53,7 +53,7 @@ class _DashPageState extends State<DashPage> {
     print(statusCode);
     print('RES: .$responseBody.');
     setState(() {
-      drivewayLights = Config().getSwitchValueJson(responseBody, "LightExt");
+      drivewayLights = Config().getSwitchValueJson(responseBody, "Light_Ext");
       garageIndoorLights = Config().getSwitchValueIndoorJson(responseBody);
     });
   }
@@ -72,7 +72,7 @@ class _DashPageState extends State<DashPage> {
     print(statusCode);
     print('RES: .$responseBody.');
     setState(() {
-      coLevel = double.parse(responseBody) / 100;
+      coLevel = Config().getCoLevelJson(responseBody);
       coColor = Config().getCoColor(coLevel);
     });
   }
@@ -81,8 +81,8 @@ class _DashPageState extends State<DashPage> {
   void initState() {
     super.initState();
     getDoorStatus();
-    // getLights();
-    // getCoValue();
+    getLights();
+    getCoValue();
   }
 
   @override
