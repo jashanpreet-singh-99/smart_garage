@@ -1,12 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:smart_garage/utils/config.dart';
-import 'package:toggle_switch/toggle_switch.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-int initialIndex = 1;
 
 class DoorPage extends StatefulWidget {
   const DoorPage({
@@ -20,15 +15,12 @@ class DoorPage extends StatefulWidget {
 }
 
 class _DoorPageState extends State<DoorPage> {
-  String garageDoorStatus = "CLOSE";
-  String garageLock = "LOCK";
+  Color garageOpenBtn = Colors.grey;
+  Color garageStopBtn = Colors.grey;
+  Color garageCloseBtn = Colors.grey;
   String resultDebug = "";
-  Color openButtonColor = Colors.blue;
-  Color closeButtonColor = Colors.blue;
-  Color lockButtonColor = Colors.blue;
-  String lockButtonText = "Lock";
+  String stat = "CLOSE";
 
-  //get door value
   void getDoorStatus() async {
     final uri = Config().getUrlDoor;
     final headers = {'Content-Type': 'application/json'};
@@ -39,111 +31,64 @@ class _DoorPageState extends State<DoorPage> {
     );
 
     int statusCode = response.statusCode;
-    final responseBody = jsonDecode(response.body);
+    String responseBody = response.body;
     print(statusCode);
     print('RES: .$responseBody.');
+    String nStat = Config().getDoorValue(responseBody);
     setState(() {
-      garageDoorStatus = Config().getDoorValue(responseBody['door']);
-      if (garageDoorStatus == "LOCK") {
-        lockButtonText = "Unlock";
-      }
-      buttonSet();
+      setBtnColors(nStat);
     });
   }
 
-  //set door value new
-  void setDoorStatus(String command) async {
+  void setBtnColors(String nStat) {
+    switch (stat) {
+      case "STOP":
+        garageStopBtn = Colors.grey;
+        break;
+      case "CLOSE":
+        garageCloseBtn = Colors.grey;
+        break;
+      default:
+        garageOpenBtn = Colors.grey;
+        break;
+    }
+    switch (nStat) {
+      case "STOP":
+        garageStopBtn = Colors.cyan;
+        break;
+      case "CLOSE":
+        garageCloseBtn = Colors.cyan;
+        break;
+      default:
+        garageOpenBtn = Colors.cyan;
+        break;
+    }
+    stat = nStat;
+  }
+
+  void openCloseDoor(String command) async {
     final uri = Config().setUrlDoor;
     final headers = {'Content-Type': 'application/json'};
 
-    final body = {'door': command};
+    Map bData = {'command': command};
+    final body = json.encode(bData);
 
-    http.Response response = await http.put(uri, headers: headers, body: body);
-
-    int statusCode = response.statusCode;
-    final responseBody = jsonDecode(response.body);
-    print(statusCode);
-    print('RES: .$responseBody.');
-
-    setState(() {
-      getDoorStatus();
-      buttonSet();
-      resultDebug = '$command ing Door';
-    });
-  }
-
-//buuton enable disable
-  void buttonSet() {
-    if (garageDoorStatus == "OPEN") {
-      openButtonColor = Colors.grey;
-      closeButtonColor = Colors.blue;
-      lockButtonColor = Colors.blue;
-      lockButtonText = "Lock";
-    } else if (garageDoorStatus == "CLOSE") {
-      openButtonColor = Colors.blue;
-      closeButtonColor = Colors.grey;
-      lockButtonColor = Colors.blue;
-      lockButtonText = "Lock";
-    } else if (garageDoorStatus == "LOCK") {
-      openButtonColor = Colors.blue;
-      closeButtonColor = Colors.blue;
-      lockButtonColor = Colors.blue;
-      lockButtonText = "Unlock";
-    }
-  }
-/**
-//old function
-  void openCloseDoor() async {
-    String command = Config().getDoorValue(
-        ((Config().getDoorInt(garageDoorStatus) + 1) % 2).toString());
-    final uri = Config().testUrlDoor;
-    final headers = {'Content-Type': 'application/json', 'Command': command};
-
-    http.Response response = await http.put(
-      uri,
-      headers: headers,
-    );
+    http.Response response = await http.post(uri, headers: headers, body: body);
 
     int statusCode = response.statusCode;
     String responseBody = response.body;
     print(statusCode);
     print('RES: .$responseBody.');
     setState(() {
-      garageDoorStatus = command;
-      garageLock = 'LOCK';
       resultDebug = responseBody;
+      setBtnColors(command);
     });
   }
-//old function
-  void stopDoor() async {
-    final uri = Config().testUrlDoorStop;
-    final headers = {'Content-Type': 'application/json', 'Status': garageLock};
-
-    http.Response response = await http.put(
-      uri,
-      headers: headers,
-    );
-
-    int statusCode = response.statusCode;
-    initialIndex = statusCode;
-    String responseBody = response.body;
-    print(statusCode);
-    print('RES: .$responseBody.');
-    String status = Config().getDoorLockValue(
-        ((Config().getDoorLockInt(garageLock) + 1) % 2).toString());
-    setState(() {
-      garageLock = status;
-      resultDebug = responseBody;
-    });
-  }
-
-**/
 
   @override
   void initState() {
     super.initState();
     getDoorStatus();
-    buttonSet();
   }
 
   @override
@@ -160,51 +105,46 @@ class _DoorPageState extends State<DoorPage> {
               padding: const EdgeInsets.all(10.0),
               child: Column(
                 children: [
-                  Image.asset('assets/garage.png'),
-                  Padding(padding: const EdgeInsets.all(30.0)),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        // Open or Close door
-                        //openCloseDoor();
-                        print('pressed opening door');
-                        setDoorStatus("OPEN");
+                        // Open door
+                        openCloseDoor("OPEN");
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: openButtonColor,
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(garageOpenBtn),
                       ),
-                      child: Text("Open"),
+                      child: const Text("OPEN"),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        //close
-                        //openCloseDoor();
-                        print('pressed closing door');
-                        setDoorStatus("CLOSE");
+                        // Stop door
+                        openCloseDoor("STOP");
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: closeButtonColor,
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(garageStopBtn),
                       ),
-                      child: Text("Close"),
+                      child: const Text("STOP"),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        // Open or Close door
-                        //stopDoor();
-                        print('pressed locking door');
-                        setDoorStatus("LOCK");
+                        // Close door
+                        openCloseDoor("CLOSE");
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: lockButtonColor,
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(garageCloseBtn),
                       ),
-                      child: Text(lockButtonText),
+                      child: const Text("CLOSE"),
                     ),
                   ),
                   Padding(

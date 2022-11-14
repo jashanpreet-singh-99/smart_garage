@@ -1,15 +1,17 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+
 class Config {
   Uri testUrlLights = Uri.parse("http://4.229.225.201/Lights");
   Uri testUrlDoor = Uri.parse("http://4.229.225.201/Door");
   Uri testUrlDoorStop = Uri.parse("http://4.229.225.201/DoorStop");
 
-  Uri getGarageData = Uri.parse("http://4.229.225.201/get_garage_data");
-  Uri getUrlDoor = Uri.parse("http://4.229.225.201/get_door");
-  Uri getUrlLight = Uri.parse("http://4.229.225.201/get_lights");
-  Uri getUrlCo = Uri.parse("http://4.229.225.201/get_co");
-  Uri setUrlLight = Uri.parse("http://4.229.225.201/set_light");
-  Uri setUrlDoor = Uri.parse("http://4.229.225.201/set_door");
-
+  Uri getGarageData = Uri.parse("http://4.229.225.201:5000/get_garage_data");
+  Uri getUrlDoor = Uri.parse("http://4.229.225.201:5000/get_door");
+  Uri getUrlLight = Uri.parse("http://4.229.225.201:5000/get_lights");
+  Uri getUrlCo = Uri.parse("http://4.229.225.201:5000/get_co");
+  Uri setUrlLight = Uri.parse("http://4.229.225.201:5000/set_light");
+  Uri setUrlDoor = Uri.parse("http://4.229.225.201:5000/set_door");
 
   String getOccupancyValue(String value) {
     if (value == "0") {
@@ -18,14 +20,15 @@ class Config {
     return "FULL";
   }
 
-  String getDoorValue(String value) {
-    if (value == "0") {
+  String getDoorValue(String v) {
+    Map<String, dynamic> jsonObj = jsonDecode(v);
+    int value = jsonObj["door"];
+    if (value == -1) {
       return "CLOSE";
-    }
-    if (value == "1") {
+    } else if (value == 1) {
       return "OPEN";
     }
-    return "LOCK";
+    return "STOP";
   }
 
   int getDoorInt(String value) {
@@ -61,5 +64,37 @@ class Config {
       return 1;
     }
     return 0;
+  }
+
+  String getSwitchValueJson(String data, String light) {
+    final body = json.decode(data);
+    int value = body[light];
+    if (value == 1) {
+      return "ON";
+    }
+    return "OFF";
+  }
+
+  Color getCoColor(double level) {
+    if (level > 0.50) {
+      return Colors.red;
+    } else if (level > 0.25) {
+      return Colors.orange;
+    } else if (level > 0.10) {
+      return Colors.yellow;
+    }
+    return Colors.green;
+  }
+
+  String getSwitchValueIndoorJson(String data) {
+    final body = json.decode(data);
+    int valueL = body["LightL"];
+    int valueM = body["LightM"];
+    int valueR = body["LightR"];
+    int value = valueL + valueM + valueR;
+    if (value > 0) {
+      return "ON";
+    }
+    return "OFF";
   }
 }
