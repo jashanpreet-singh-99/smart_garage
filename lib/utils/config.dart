@@ -6,7 +6,6 @@ class Config {
   Uri testUrlDoor = Uri.parse("http://4.229.225.201/Door");
   Uri testUrlDoorStop = Uri.parse("http://4.229.225.201/DoorStop");
 
-  Uri getGarageData = Uri.parse("http://4.229.225.201:5000/get_garage_data");
   Uri getUrlDoor = Uri.parse("http://4.229.225.201:5000/get_door");
   Uri getUrlLight = Uri.parse("http://4.229.225.201:5000/get_lights");
   Uri getUrlCo = Uri.parse("http://4.229.225.201:5000/get_co");
@@ -93,14 +92,23 @@ class Config {
     return "OFF";
   }
 
-  List<String> getSwitchValueList(String data, List<String> list) {
+  List<int> getSwitchValueList(String data) {
     final body = json.decode(data);
-    list[0] = getSwitchValueInt(body["Light_L"]);
-    list[1] = getSwitchValueInt(body["Light_M"]);
-    list[2] = getSwitchValueInt(body["Light_R"]);
-    list[3] = getSwitchValueInt(body["Light_Ext"]);
+    late List<int> list = [];
+    list.add(body["Light_L"]);
+    list.add(body["Light_M"]);
+    list.add(body["Light_R"]);
+    list.add(body["Light_Ext"]);
     return list;
   }
+  //   List<int> getSwitchValueList(String data, List<int> list) {
+  //   final body = json.decode(data);
+  //   list[0] = getSwitchValueInt(body["Light_L"]);
+  //   list[1] = getSwitchValueInt(body["Light_M"]);
+  //   list[2] = getSwitchValueInt(body["Light_R"]);
+  //   list[3] = getSwitchValueInt(body["Light_Ext"]);
+  //   return list;
+  // }
 
   String getSwitchValueIndoorJson(String data) {
     final body = json.decode(data);

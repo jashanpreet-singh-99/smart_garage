@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:toggle_switch/toggle_switch.dart';
 import 'package:smart_garage/utils/config.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LightingPage extends StatefulWidget {
   const LightingPage({
@@ -15,12 +17,17 @@ class LightingPage extends StatefulWidget {
 }
 
 class _LightingPageState extends State<LightingPage> {
-  String lightL = "OFF";
-  String lightM = "OFF";
-  String lightR = "OFF";
-  String lightExt = "OFF";
+  // String lightL = "OFF";
+  // String lightM = "OFF";
+  // String lightR = "OFF";
+  // String lightExt = "OFF";
 
-  late List<String> lights = [];
+  int lightL = 0;
+  int lightR = 0;
+  int lightM = 0;
+  int lightExt = 0;
+
+  late List<int> lights = [];
 
   void getLight() async {
     final uri = Config().getUrlLight;
@@ -36,22 +43,22 @@ class _LightingPageState extends State<LightingPage> {
     print(statusCode);
     print('RES: .$responseBody.');
     setState(() {
-      lights = Config().getSwitchValueList(responseBody, lights);
+      lights = Config().getSwitchValueList(responseBody);
+      lightL = lights[0];
+      lightM = lights[1];
+      lightR = lights[2];
+      lightExt = lights[3];
     });
   }
 
-  void changeLight(String light, int varLight) async {
-    String value = Config().getSwitchValue(
-        ((Config().getSwitchInt(lights[varLight]) + 1) % 2).toString());
-    print(value);
-    int val = Config().getSwitchInt(value);
+  void changeLight(String light, int varLight, int index) async {
     final uri = Config().setUrlLight;
 
     final headers = {
       'Content-Type': 'application/json',
     };
 
-    Map bData = {'Light': light, 'Value': val};
+    Map bData = {'Light': light, 'Value': index};
     final body = json.encode(bData);
 
     http.Response response = await http.post(uri, headers: headers, body: body);
@@ -61,7 +68,22 @@ class _LightingPageState extends State<LightingPage> {
     print(statusCode);
     print('RES: .$responseBody.');
     setState(() {
-      lights[varLight] = value;
+      switch (varLight) {
+        case 0:
+          lightL = index;
+          break;
+        case 1:
+          lightM = index;
+          break;
+        case 2:
+          lightR = index;
+          break;
+        case 3:
+          lightExt = index;
+          break;
+        default:
+          break;
+      }
     });
   }
 
@@ -80,76 +102,257 @@ class _LightingPageState extends State<LightingPage> {
     return Scaffold(
         body: Center(
       child: Card(
-        elevation: 50,
+        elevation: 100,
         shadowColor: Colors.black,
         child: SizedBox(
           width: 300,
           height: 640,
           child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const Text("Light Left"),
-                      ElevatedButton(
-                          onPressed: () {
-                            changeLight("Light_L", 0);
-                          },
-                          child: Text(lights[0])),
-                    ],
+            //padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.only(top: 60.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Image.asset(
+                    'assets/light_icon.png',
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const Text("Light Middle"),
-                      ElevatedButton(
-                          onPressed: () {
-                            changeLight("Light_M", 1);
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("External Lights"),
+                        ToggleSwitch(
+                          minWidth: 50.0,
+                          minHeight: 50.0,
+                          initialLabelIndex: lightExt,
+                          cornerRadius: 20.0,
+                          activeFgColor: Colors.white,
+                          inactiveBgColor: Colors.grey,
+                          inactiveFgColor: Colors.white,
+                          totalSwitches: 2,
+                          icons: [
+                            FontAwesomeIcons.lightbulb,
+                            FontAwesomeIcons.solidLightbulb,
+                          ],
+                          iconSize: 30.0,
+                          activeBgColors: [
+                            [Colors.black45, Colors.black26],
+                            [Colors.yellow, Colors.orange]
+                          ],
+                          animate:
+                              true, // with just animate set to true, default curve = Curves.easeIn
+                          curve: Curves
+                              .bounceInOut, // animate must be set to true when using custom curve
+                          onToggle: (index) {
+                            if (index == 1) {
+                              changeLight('Light_Ext', 3, 1);
+                            } else if (index == 0) {
+                              changeLight('Light_Ext', 3, 0);
+                            }
                           },
-                          child: Text(lights[1])),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const Text("Light Right "),
-                      ElevatedButton(
-                          onPressed: () {
-                            changeLight("Light_R", 2);
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Left Lights"),
+                        ToggleSwitch(
+                          minWidth: 50.0,
+                          minHeight: 50.0,
+                          initialLabelIndex: lightL,
+                          cornerRadius: 20.0,
+                          activeFgColor: Colors.white,
+                          inactiveBgColor: Colors.grey,
+                          inactiveFgColor: Colors.white,
+                          totalSwitches: 2,
+                          icons: [
+                            FontAwesomeIcons.lightbulb,
+                            FontAwesomeIcons.solidLightbulb,
+                          ],
+                          iconSize: 30.0,
+                          activeBgColors: [
+                            [Colors.black45, Colors.black26],
+                            [Colors.yellow, Colors.orange]
+                          ],
+                          animate:
+                              true, // with just animate set to true, default curve = Curves.easeIn
+                          curve: Curves
+                              .bounceInOut, // animate must be set to true when using custom curve
+                          onToggle: (index) {
+                            if (index == 1) {
+                              changeLight('Light_L', 0, 1);
+                            } else if (index == 0) {
+                              changeLight('Light_L', 0, 0);
+                            }
                           },
-                          child: Text(lights[2])),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const Text("Light Driveway"),
-                      ElevatedButton(
-                          onPressed: () {
-                            changeLight("Light_Ext", 3);
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Middle Lights"),
+                        ToggleSwitch(
+                          minWidth: 50.0,
+                          minHeight: 50.0,
+                          initialLabelIndex: lightM,
+                          cornerRadius: 20.0,
+                          activeFgColor: Colors.white,
+                          inactiveBgColor: Colors.grey,
+                          inactiveFgColor: Colors.white,
+                          totalSwitches: 2,
+                          icons: [
+                            FontAwesomeIcons.lightbulb,
+                            FontAwesomeIcons.solidLightbulb,
+                          ],
+                          iconSize: 30.0,
+                          activeBgColors: [
+                            [Colors.black45, Colors.black26],
+                            [Colors.yellow, Colors.orange]
+                          ],
+                          animate:
+                              true, // with just animate set to true, default curve = Curves.easeIn
+                          curve: Curves
+                              .bounceInOut, // animate must be set to true when using custom curve
+                          onToggle: (index) {
+                            if (index == 1) {
+                              changeLight('Light_M', 1, 1);
+                            } else if (index == 0) {
+                              changeLight('Light_M', 1, 0);
+                            }
                           },
-                          child: Text(lights[3])),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Rights Lights"),
+                        ToggleSwitch(
+                          minWidth: 50.0,
+                          minHeight: 50.0,
+                          initialLabelIndex: lightR,
+                          cornerRadius: 20.0,
+                          activeFgColor: Colors.white,
+                          inactiveBgColor: Colors.grey,
+                          inactiveFgColor: Colors.white,
+                          totalSwitches: 2,
+                          icons: [
+                            FontAwesomeIcons.lightbulb,
+                            FontAwesomeIcons.solidLightbulb,
+                          ],
+                          iconSize: 30.0,
+                          activeBgColors: [
+                            [Colors.black45, Colors.black26],
+                            [Colors.yellow, Colors.orange]
+                          ],
+                          animate:
+                              true, // with just animate set to true, default curve = Curves.easeIn
+                          curve: Curves
+                              .bounceInOut, // animate must be set to true when using custom curve
+                          onToggle: (index) {
+                            if (index == 1) {
+                              changeLight('Light_R', 2, 1);
+                            } else if (index == 0) {
+                              changeLight('Light_R', 2, 0);
+                            }
+                            //print('switched to: $index');
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
     ));
+    // return Scaffold(
+    //     body: Center(
+    //   child: Card(
+    //     elevation: 50,
+    //     shadowColor: Colors.black,
+    //     child: SizedBox(
+    //       width: 300,
+    //       height: 640,
+    //       child: Padding(
+    //         padding: const EdgeInsets.all(10.0),
+    //         child: Column(
+    //           children: [
+    //             Padding(
+    //               padding: const EdgeInsets.all(10.0),
+    //               child: Row(
+    //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //                 children: [
+    //                   const Text("Light Left"),
+    //                   ElevatedButton(
+    //                       onPressed: () {
+    //                         changeLight("Light_L", 0);
+    //                       },
+    //                       child: Text(lights[0])),
+    //                 ],
+    //               ),
+    //             ),
+    //             Padding(
+    //               padding: const EdgeInsets.all(10.0),
+    //               child: Row(
+    //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //                 children: [
+    //                   const Text("Light Middle"),
+    //                   ElevatedButton(
+    //                       onPressed: () {
+    //                         changeLight("Light_M", 1);
+    //                       },
+    //                       child: Text(lights[1])),
+    //                 ],
+    //               ),
+    //             ),
+    //             Padding(
+    //               padding: const EdgeInsets.all(10.0),
+    //               child: Row(
+    //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //                 children: [
+    //                   const Text("Light Right "),
+    //                   ElevatedButton(
+    //                       onPressed: () {
+    //                         changeLight("Light_R", 2);
+    //                       },
+    //                       child: Text(lights[2])),
+    //                 ],
+    //               ),
+    //             ),
+    //             Padding(
+    //               padding: const EdgeInsets.all(10.0),
+    //               child: Row(
+    //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //                 children: [
+    //                   const Text("Light Driveway"),
+    //                   ElevatedButton(
+    //                       onPressed: () {
+    //                         changeLight("Light_Ext", 3);
+    //                       },
+    //                       child: Text(lights[3])),
+    //                 ],
+    //               ),
+    //             ),
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // ));
   }
 }
