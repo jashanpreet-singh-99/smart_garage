@@ -107,6 +107,11 @@ class _DoorPageState extends State<DoorPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(10.0),
+                    child: Image.asset('assets/garage.png'),
+                  ),
+                  const Padding(padding: EdgeInsets.all(30.0)),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
                     child: ElevatedButton(
                       onPressed: () {
                         // Open door

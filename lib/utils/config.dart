@@ -101,14 +101,6 @@ class Config {
     list.add(body["Light_Ext"]);
     return list;
   }
-  //   List<int> getSwitchValueList(String data, List<int> list) {
-  //   final body = json.decode(data);
-  //   list[0] = getSwitchValueInt(body["Light_L"]);
-  //   list[1] = getSwitchValueInt(body["Light_M"]);
-  //   list[2] = getSwitchValueInt(body["Light_R"]);
-  //   list[3] = getSwitchValueInt(body["Light_Ext"]);
-  //   return list;
-  // }
 
   String getSwitchValueIndoorJson(String data) {
     final body = json.decode(data);
