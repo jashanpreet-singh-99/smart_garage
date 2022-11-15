@@ -17,11 +17,6 @@ class LightingPage extends StatefulWidget {
 }
 
 class _LightingPageState extends State<LightingPage> {
-  // String lightL = "OFF";
-  // String lightM = "OFF";
-  // String lightR = "OFF";
-  // String lightExt = "OFF";
-
   int lightL = 0;
   int lightR = 0;
   int lightM = 0;
@@ -131,12 +126,12 @@ class _LightingPageState extends State<LightingPage> {
                           inactiveBgColor: Colors.grey,
                           inactiveFgColor: Colors.white,
                           totalSwitches: 2,
-                          icons: [
+                          icons: const [
                             FontAwesomeIcons.lightbulb,
                             FontAwesomeIcons.solidLightbulb,
                           ],
                           iconSize: 30.0,
-                          activeBgColors: [
+                          activeBgColors: const [
                             [Colors.black45, Colors.black26],
                             [Colors.yellow, Colors.orange]
                           ],
@@ -170,12 +165,12 @@ class _LightingPageState extends State<LightingPage> {
                           inactiveBgColor: Colors.grey,
                           inactiveFgColor: Colors.white,
                           totalSwitches: 2,
-                          icons: [
+                          icons: const [
                             FontAwesomeIcons.lightbulb,
                             FontAwesomeIcons.solidLightbulb,
                           ],
                           iconSize: 30.0,
-                          activeBgColors: [
+                          activeBgColors: const [
                             [Colors.black45, Colors.black26],
                             [Colors.yellow, Colors.orange]
                           ],
@@ -209,12 +204,12 @@ class _LightingPageState extends State<LightingPage> {
                           inactiveBgColor: Colors.grey,
                           inactiveFgColor: Colors.white,
                           totalSwitches: 2,
-                          icons: [
+                          icons: const [
                             FontAwesomeIcons.lightbulb,
                             FontAwesomeIcons.solidLightbulb,
                           ],
                           iconSize: 30.0,
-                          activeBgColors: [
+                          activeBgColors: const [
                             [Colors.black45, Colors.black26],
                             [Colors.yellow, Colors.orange]
                           ],
@@ -248,12 +243,12 @@ class _LightingPageState extends State<LightingPage> {
                           inactiveBgColor: Colors.grey,
                           inactiveFgColor: Colors.white,
                           totalSwitches: 2,
-                          icons: [
+                          icons: const [
                             FontAwesomeIcons.lightbulb,
                             FontAwesomeIcons.solidLightbulb,
                           ],
                           iconSize: 30.0,
-                          activeBgColors: [
+                          activeBgColors: const [
                             [Colors.black45, Colors.black26],
                             [Colors.yellow, Colors.orange]
                           ],
@@ -280,79 +275,5 @@ class _LightingPageState extends State<LightingPage> {
         ),
       ),
     ));
-    // return Scaffold(
-    //     body: Center(
-    //   child: Card(
-    //     elevation: 50,
-    //     shadowColor: Colors.black,
-    //     child: SizedBox(
-    //       width: 300,
-    //       height: 640,
-    //       child: Padding(
-    //         padding: const EdgeInsets.all(10.0),
-    //         child: Column(
-    //           children: [
-    //             Padding(
-    //               padding: const EdgeInsets.all(10.0),
-    //               child: Row(
-    //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //                 children: [
-    //                   const Text("Light Left"),
-    //                   ElevatedButton(
-    //                       onPressed: () {
-    //                         changeLight("Light_L", 0);
-    //                       },
-    //                       child: Text(lights[0])),
-    //                 ],
-    //               ),
-    //             ),
-    //             Padding(
-    //               padding: const EdgeInsets.all(10.0),
-    //               child: Row(
-    //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //                 children: [
-    //                   const Text("Light Middle"),
-    //                   ElevatedButton(
-    //                       onPressed: () {
-    //                         changeLight("Light_M", 1);
-    //                       },
-    //                       child: Text(lights[1])),
-    //                 ],
-    //               ),
-    //             ),
-    //             Padding(
-    //               padding: const EdgeInsets.all(10.0),
-    //               child: Row(
-    //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //                 children: [
-    //                   const Text("Light Right "),
-    //                   ElevatedButton(
-    //                       onPressed: () {
-    //                         changeLight("Light_R", 2);
-    //                       },
-    //                       child: Text(lights[2])),
-    //                 ],
-    //               ),
-    //             ),
-    //             Padding(
-    //               padding: const EdgeInsets.all(10.0),
-    //               child: Row(
-    //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //                 children: [
-    //                   const Text("Light Driveway"),
-    //                   ElevatedButton(
-    //                       onPressed: () {
-    //                         changeLight("Light_Ext", 3);
-    //                       },
-    //                       child: Text(lights[3])),
-    //                 ],
-    //               ),
-    //             ),
-    //           ],
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // ));
   }
 }
