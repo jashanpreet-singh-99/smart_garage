@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:lottie/lottie.dart';
 import 'package:smart_garage/utils/config.dart';
 
 class DoorPage extends StatefulWidget {
@@ -14,12 +16,18 @@ class DoorPage extends StatefulWidget {
   }
 }
 
-class _DoorPageState extends State<DoorPage> {
+class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
   Color garageOpenBtn = Colors.grey;
   Color garageStopBtn = Colors.grey;
   Color garageCloseBtn = Colors.grey;
   String resultDebug = "";
   String stat = "CLOSE";
+
+  Color connectionStat = Colors.blue;
+
+  bool firstRun = true;
+
+  late AnimationController animationController;
 
   void getDoorStatus() async {
     final uri = Config().getUrlDoor;
@@ -37,7 +45,9 @@ class _DoorPageState extends State<DoorPage> {
     String nStat = Config().getDoorValue(responseBody);
     setState(() {
       setBtnColors(nStat);
+      setDoorConnectionStatus("{\"status\":1}");
     });
+    firstRun = false;
   }
 
   void setBtnColors(String nStat) {
@@ -54,12 +64,23 @@ class _DoorPageState extends State<DoorPage> {
     }
     switch (nStat) {
       case "STOP":
+        animationController.stop();
         garageStopBtn = Colors.cyan;
         break;
       case "CLOSE":
+        if (firstRun) {
+        } else {
+          animationController.reverse();
+        }
         garageCloseBtn = Colors.cyan;
         break;
       default:
+        if (firstRun) {
+          animationController.animateTo(animationController.upperBound,
+              duration: const Duration(milliseconds: 500));
+        } else {
+          animationController.forward();
+        }
         garageOpenBtn = Colors.cyan;
         break;
     }
@@ -80,7 +101,7 @@ class _DoorPageState extends State<DoorPage> {
     print(statusCode);
     print('RES: .$responseBody.');
     setState(() {
-      resultDebug = responseBody;
+      setDoorConnectionStatus(responseBody);
       setBtnColors(command);
     });
   }
@@ -89,6 +110,13 @@ class _DoorPageState extends State<DoorPage> {
   void initState() {
     super.initState();
     getDoorStatus();
+    animationController = AnimationController(vsync: this);
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -107,9 +135,17 @@ class _DoorPageState extends State<DoorPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: Image.asset('assets/garage.png'),
+                    child: Lottie.asset(
+                      'assets/garage_door.json',
+                      repeat: false,
+                      animate: false,
+                      controller: animationController,
+                      onLoaded: (composition) {
+                        animationController.duration = composition.duration;
+                      },
+                    ),
                   ),
-                  const Padding(padding: EdgeInsets.all(30.0)),
+                  const Padding(padding: EdgeInsets.all(1.0)),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: ElevatedButton(
@@ -154,7 +190,23 @@ class _DoorPageState extends State<DoorPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: Text(resultDebug),
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ButtonStyle(
+                        shadowColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          side: BorderSide(color: connectionStat),
+                        )),
+                      ),
+                      child: Text(resultDebug,
+                          style: TextStyle(color: connectionStat)),
+                    ),
                   ),
                 ],
               ),
@@ -163,5 +215,14 @@ class _DoorPageState extends State<DoorPage> {
         ),
       ),
     );
+  }
+
+  void setDoorConnectionStatus(String responseBody) {
+    resultDebug = Config.getConnectionStat(responseBody);
+    if (resultDebug == "SUCCESS") {
+      connectionStat = Colors.green;
+    } else if (resultDebug == "FAILURE") {
+      connectionStat = Colors.red;
+    }
   }
 }

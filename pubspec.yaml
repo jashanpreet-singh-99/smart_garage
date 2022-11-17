@@ -43,6 +43,9 @@ dependencies:
   flutter_gif: ^0.0.4
   toggle_switch: ^2.0.1
   font_awesome_flutter: ^10.2.1
+  onesignal_flutter: ^3.4.2
+  firebase_core: ^2.2.0
+  cloud_firestore: ^4.0.5
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +71,7 @@ flutter:
   assets:
     - assets/garage.png
     - assets/light_icon.png
+    - assets/garage_door.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -12,6 +12,8 @@ class Config {
   Uri setUrlLight = Uri.parse("http://4.229.225.201:5000/set_light");
   Uri setUrlDoor = Uri.parse("http://4.229.225.201:5000/set_door");
 
+  static final String API_KEY = "b22e4e51-0fdf-4c75-9d95-f023e9c32c74";
+
   String getOccupancyValue(String value) {
     if (value == "0") {
       return "EMPTY";
@@ -117,5 +119,14 @@ class Config {
   double getCoLevelJson(String data) {
     final body = json.decode(data);
     return body["CO"] / 100;
+  }
+
+  static String getConnectionStat(String resp) {
+    final body = json.decode(resp);
+    if (body["status"] == 1) {
+      return "SUCCESS";
+    } else {
+      return "FAILURE";
+    }
   }
 }

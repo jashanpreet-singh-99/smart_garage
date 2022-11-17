@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>973515641694-tcm4isa24k1nkkv14sbqr1jroc3p608j.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.973515641694-tcm4isa24k1nkkv14sbqr1jroc3p608j</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB3dZRw9A-612L0c7odkRuCkmO6vI-pkYs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>973515641694</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.ase.smartGarage</string>
+	<key>PROJECT_ID</key>
+	<string>ase-mobile-41f25</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ase-mobile-41f25.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:973515641694:ios:856d1d31bc6f4d8ec2f5cf</string>
+</dict>
+</plist>

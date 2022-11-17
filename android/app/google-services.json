@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "973515641694",
+    "project_id": "ase-mobile-41f25",
+    "storage_bucket": "ase-mobile-41f25.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:973515641694:android:79682c171638e7fcc2f5cf",
+        "android_client_info": {
+          "package_name": "com.example.smart_garage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "973515641694-h01omcta1ahtpqlqputarl1gmfnlpno2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALQ5-j8DUoBK2n2WfSklXGqRTi6N-W3m0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "973515641694-h01omcta1ahtpqlqputarl1gmfnlpno2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
