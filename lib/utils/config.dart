@@ -6,11 +6,9 @@ class Config {
   Uri testUrlDoor = Uri.parse("http://4.229.225.201/Door");
   Uri testUrlDoorStop = Uri.parse("http://4.229.225.201/DoorStop");
 
-  Uri getUrlDoor = Uri.parse("http://4.229.225.201:5000/get_door");
-  Uri getUrlLight = Uri.parse("http://4.229.225.201:5000/get_lights");
-  Uri getUrlCo = Uri.parse("http://4.229.225.201:5000/get_co");
-  Uri setUrlLight = Uri.parse("http://4.229.225.201:5000/set_light");
-  Uri setUrlDoor = Uri.parse("http://4.229.225.201:5000/set_door");
+  Uri urlDoor = Uri.parse("http://4.229.225.201:5000/door");
+  Uri urlLight = Uri.parse("http://4.229.225.201:5000/light");
+  Uri urlCo = Uri.parse("http://4.229.225.201:5000/co");
 
   static final String API_KEY = "b22e4e51-0fdf-4c75-9d95-f023e9c32c74";
 

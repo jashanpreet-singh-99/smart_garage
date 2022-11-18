@@ -22,7 +22,7 @@ class _DashPageState extends State<DashPage> {
   Color coColor = Colors.green;
 
   void getDoorStatus() async {
-    final uri = Config().getUrlDoor;
+    final uri = Config().urlDoor;
     final headers = {'Content-Type': 'application/json'};
 
     http.Response response = await http.get(
@@ -40,7 +40,7 @@ class _DashPageState extends State<DashPage> {
   }
 
   void getLights() async {
-    final uri = Config().getUrlLight;
+    final uri = Config().urlLight;
     final headers = {'Content-Type': 'application/json'};
 
     http.Response response = await http.get(
@@ -59,7 +59,7 @@ class _DashPageState extends State<DashPage> {
   }
 
   void getCoValue() async {
-    final uri = Config().getUrlCo;
+    final uri = Config().urlCo;
     final headers = {'Content-Type': 'application/json'};
 
     http.Response response = await http.get(

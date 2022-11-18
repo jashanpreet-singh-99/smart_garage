@@ -30,7 +30,7 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
   late AnimationController animationController;
 
   void getDoorStatus() async {
-    final uri = Config().getUrlDoor;
+    final uri = Config().urlDoor;
     final headers = {'Content-Type': 'application/json'};
 
     http.Response response = await http.get(
@@ -88,7 +88,7 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
   }
 
   void openCloseDoor(String command) async {
-    final uri = Config().setUrlDoor;
+    final uri = Config().urlDoor;
     final headers = {'Content-Type': 'application/json'};
 
     Map bData = {'command': command};

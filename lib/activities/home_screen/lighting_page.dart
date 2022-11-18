@@ -25,7 +25,7 @@ class _LightingPageState extends State<LightingPage> {
   late List<int> lights = [];
 
   void getLight() async {
-    final uri = Config().getUrlLight;
+    final uri = Config().urlLight;
     final headers = {'Content-Type': 'application/json'};
 
     http.Response response = await http.get(
@@ -47,7 +47,7 @@ class _LightingPageState extends State<LightingPage> {
   }
 
   void changeLight(String light, int varLight, int index) async {
-    final uri = Config().setUrlLight;
+    final uri = Config().urlLight;
 
     final headers = {
       'Content-Type': 'application/json',
