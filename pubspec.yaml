@@ -46,6 +46,7 @@ dependencies:
   onesignal_flutter: ^3.4.2
   firebase_core: ^2.2.0
   cloud_firestore: ^4.0.5
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:
