@@ -1,16 +1,25 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
+import 'package:http/http.dart' as http;
+import 'package:smart_garage/utils/preference_manager.dart';
+
 class Config {
   Uri testUrlLights = Uri.parse("http://4.229.225.201/Lights");
   Uri testUrlDoor = Uri.parse("http://4.229.225.201/Door");
   Uri testUrlDoorStop = Uri.parse("http://4.229.225.201/DoorStop");
 
-  Uri urlDoor = Uri.parse("http://4.229.225.201:5000/door");
+  static Uri urlLogin = Uri.parse("http://4.229.225.201:5000/login");
+  Uri urlDoor = Uri.parse("http://4.229.225.201:5000/door?token=$token");
   Uri urlLight = Uri.parse("http://4.229.225.201:5000/light");
   Uri urlCo = Uri.parse("http://4.229.225.201:5000/co");
+  Uri urlValid = Uri.parse("http://4.229.225.201:5000/?token=$token");
 
-  static final String API_KEY = "b22e4e51-0fdf-4c75-9d95-f023e9c32c74";
+  static const String API_KEY = "b22e4e51-0fdf-4c75-9d95-f023e9c32c74";
+
+  static String token = "";
+
+  static String NONE = "_none";
 
   String getOccupancyValue(String value) {
     if (value == "0") {
@@ -125,6 +134,64 @@ class Config {
       return "SUCCESS";
     } else {
       return "FAILURE";
+    }
+  }
+
+  static String getToken(String resp) {
+    final body = json.decode(resp);
+    token = body["token"];
+    return token;
+  }
+
+  static void saveToStorage(String key, String value) {
+    print("Saving to local");
+    PreferenceManager.setString(key, value);
+  }
+
+  static Future<dynamic> readFromStorage(String key, String def) {
+    return PreferenceManager.getString(key, def);
+  }
+
+  static const String KEY_AUTH_ID = "auth_id";
+  static const String KEY_USER = "user_name";
+  static const String KEY_PASS = "user_pass";
+
+  static Future<bool> refreshToken() async {
+    String email = "";
+    String password = "";
+    final uri = urlLogin;
+    final headers = {'Content-Type': 'application/json'};
+    email = await readFromStorage(KEY_USER, "");
+    password = await readFromStorage(KEY_PASS, "");
+    Map bData = {'username': email, 'password': password};
+    final body = json.encode(bData);
+
+    http.Response response = await http.post(uri, headers: headers, body: body);
+
+    int statusCode = response.statusCode;
+    String responseBody = response.body;
+    Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
+    Log.log(Log.TAG_REQUEST, responseBody, Log.I);
+    if (statusCode == 200) {
+      saveToStorage(Config.KEY_AUTH_ID, Config.getToken(responseBody));
+      return true;
+    }
+    return false;
+  }
+}
+
+class Log {
+  static const bool DEBUG = true;
+
+  static const String E = "Error";
+  static const String I = "Info ";
+
+  static const String TAG_SPLASH = "Activity_Splash_Screen";
+  static const String TAG_REQUEST = "Network_Requests      ";
+
+  static void log(String tag, String message, String type) {
+    if (DEBUG) {
+      print("$tag : $type : $message");
     }
   }
 }

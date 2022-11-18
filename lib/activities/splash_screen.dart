@@ -2,6 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:smart_garage/activities/home_screen.dart';
+import 'package:smart_garage/activities/login_screen1.dart';
+
+import '../utils/config.dart';
+
+import 'package:http/http.dart' as http;
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({
@@ -15,13 +20,73 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  _SplashScreenState() {
-    Timer(const Duration(milliseconds: 1000), () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
-    });
+  @override
+  void initState() {
+    super.initState();
+    isLoggedIn();
+  }
+
+  Future<void> isLoggedIn() async {
+    String token =
+        await Config.readFromStorage(Config.KEY_AUTH_ID, Config.NONE);
+    String user = await Config.readFromStorage(Config.KEY_USER, Config.NONE);
+    String pass = await Config.readFromStorage(Config.KEY_PASS, Config.NONE);
+
+    Log.log(Log.TAG_SPLASH, "$token $user $pass", Log.I);
+
+    if (token != Config.NONE) {
+      Config.token = token;
+      Log.log(Log.TAG_SPLASH, "Token present", Log.I);
+
+      bool isValidToken = await checkToken();
+      Log.log(Log.TAG_SPLASH, "Token Check :  $isValidToken", Log.I);
+
+      if (isValidToken) {
+        Timer(const Duration(milliseconds: 1000), () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
+        });
+      } else {
+        Timer(const Duration(milliseconds: 1000), () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginScreenA()),
+          );
+        });
+      }
+    } else {
+      Timer(const Duration(milliseconds: 1000), () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginScreenA()),
+        );
+      });
+    }
+  }
+
+  Future<bool> checkToken() async {
+    final uri = Config().urlValid;
+    final headers = {'Content-Type': 'application/json'};
+
+    http.Response response = await http.get(uri, headers: headers);
+
+    int statusCode = response.statusCode;
+    String responseBody = response.body;
+    Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
+    Log.log(Log.TAG_REQUEST, responseBody, Log.I);
+
+    if (statusCode == 200) {
+      return true;
+    } else if (statusCode == 403) {
+      Log.log(Log.TAG_REQUEST, "Token Expired", Log.I);
+      if (await Config.refreshToken()) {
+        Log.log(Log.TAG_REQUEST, "Token Refreshed", Log.I);
+        return true;
+      }
+    }
+    return false;
   }
 
   @override

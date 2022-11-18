@@ -32,11 +32,19 @@ class _DashPageState extends State<DashPage> {
 
     int statusCode = response.statusCode;
     String responseBody = response.body;
-    print(statusCode);
-    print('RES: .$responseBody.');
-    setState(() {
-      garageDoorStatus = Config().getDoorValue(responseBody);
-    });
+    Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
+    Log.log(Log.TAG_REQUEST, responseBody, Log.I);
+    if (statusCode == 200) {
+      setState(() {
+        garageDoorStatus = Config().getDoorValue(responseBody);
+      });
+    } else if (statusCode == 403) {
+      Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
+      if (await Config.refreshToken()) {
+        Log.log(Log.TAG_REQUEST, "Calling Again using new Token", Log.I);
+        getDoorStatus();
+      }
+    }
   }
 
   void getLights() async {

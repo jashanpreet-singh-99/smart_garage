@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
@@ -42,12 +41,14 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
     String responseBody = response.body;
     print(statusCode);
     print('RES: .$responseBody.');
-    String nStat = Config().getDoorValue(responseBody);
-    setState(() {
-      setBtnColors(nStat);
-      setDoorConnectionStatus("{\"status\":1}");
-    });
-    firstRun = false;
+    if (statusCode == 200) {
+      String nStat = Config().getDoorValue(responseBody);
+      setState(() {
+        setBtnColors(nStat);
+        setDoorConnectionStatus("{\"status\":1}");
+      });
+      firstRun = false;
+    }
   }
 
   void setBtnColors(String nStat) {
