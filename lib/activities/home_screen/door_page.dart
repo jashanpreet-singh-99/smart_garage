@@ -39,8 +39,8 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
 
     int statusCode = response.statusCode;
     String responseBody = response.body;
-    print(statusCode);
-    print('RES: .$responseBody.');
+    Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
+    Log.log(Log.TAG_REQUEST, responseBody, Log.I);
     if (statusCode == 200) {
       String nStat = Config().getDoorValue(responseBody);
       setState(() {
@@ -48,6 +48,12 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
         setDoorConnectionStatus("{\"status\":1}");
       });
       firstRun = false;
+    } else if (statusCode == 403) {
+      Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
+      if (await Config.refreshToken()) {
+        Log.log(Log.TAG_REQUEST, "Calling Again using new Token", Log.I);
+        getDoorStatus();
+      }
     }
   }
 
@@ -99,12 +105,20 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
 
     int statusCode = response.statusCode;
     String responseBody = response.body;
-    print(statusCode);
-    print('RES: .$responseBody.');
-    setState(() {
-      setDoorConnectionStatus(responseBody);
-      setBtnColors(command);
-    });
+    if (statusCode == 200) {
+      String nStat = Config().getDoorValue(responseBody);
+      setState(() {
+        setDoorConnectionStatus(responseBody);
+        setBtnColors(command);
+      });
+      firstRun = false;
+    } else if (statusCode == 403) {
+      Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
+      if (await Config.refreshToken()) {
+        Log.log(Log.TAG_REQUEST, "Calling Again using new Token", Log.I);
+        openCloseDoor(command);
+      }
+    }
   }
 
   @override

@@ -5,14 +5,10 @@ import 'package:http/http.dart' as http;
 import 'package:smart_garage/utils/preference_manager.dart';
 
 class Config {
-  Uri testUrlLights = Uri.parse("http://4.229.225.201/Lights");
-  Uri testUrlDoor = Uri.parse("http://4.229.225.201/Door");
-  Uri testUrlDoorStop = Uri.parse("http://4.229.225.201/DoorStop");
-
   static Uri urlLogin = Uri.parse("http://4.229.225.201:5000/login");
   Uri urlDoor = Uri.parse("http://4.229.225.201:5000/door?token=$token");
-  Uri urlLight = Uri.parse("http://4.229.225.201:5000/light");
-  Uri urlCo = Uri.parse("http://4.229.225.201:5000/co");
+  Uri urlLight = Uri.parse("http://4.229.225.201:5000/light?token=$token");
+  Uri urlCo = Uri.parse("http://4.229.225.201:5000/co?token=$token");
   Uri urlValid = Uri.parse("http://4.229.225.201:5000/?token=$token");
 
   static const String API_KEY = "b22e4e51-0fdf-4c75-9d95-f023e9c32c74";

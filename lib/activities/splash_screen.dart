@@ -41,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen> {
       bool isValidToken = await checkToken();
       Log.log(Log.TAG_SPLASH, "Token Check :  $isValidToken", Log.I);
 
-      if (isValidToken) {
+      if (isValidToken == true) {
         Timer(const Duration(milliseconds: 1000), () {
           Navigator.push(
             context,

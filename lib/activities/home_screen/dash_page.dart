@@ -58,12 +58,20 @@ class _DashPageState extends State<DashPage> {
 
     int statusCode = response.statusCode;
     String responseBody = response.body;
-    print(statusCode);
-    print('RES: .$responseBody.');
-    setState(() {
-      drivewayLights = Config().getSwitchValueJson(responseBody, "Light_Ext");
-      garageIndoorLights = Config().getSwitchValueIndoorJson(responseBody);
-    });
+    Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
+    Log.log(Log.TAG_REQUEST, responseBody, Log.I);
+    if (statusCode == 200) {
+      setState(() {
+        drivewayLights = Config().getSwitchValueJson(responseBody, "Light_Ext");
+        garageIndoorLights = Config().getSwitchValueIndoorJson(responseBody);
+      });
+    } else if (statusCode == 403) {
+      Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
+      if (await Config.refreshToken()) {
+        Log.log(Log.TAG_REQUEST, "Calling Again using new Token", Log.I);
+        getLights();
+      }
+    }
   }
 
   void getCoValue() async {
@@ -77,12 +85,21 @@ class _DashPageState extends State<DashPage> {
 
     int statusCode = response.statusCode;
     String responseBody = response.body;
-    print(statusCode);
-    print('RES: .$responseBody.');
-    setState(() {
-      coLevel = Config().getCoLevelJson(responseBody);
-      coColor = Config().getCoColor(coLevel);
-    });
+    Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
+    Log.log(Log.TAG_REQUEST, responseBody, Log.I);
+
+    if (statusCode == 200) {
+      setState(() {
+        coLevel = Config().getCoLevelJson(responseBody);
+        coColor = Config().getCoColor(coLevel);
+      });
+    } else if (statusCode == 403) {
+      Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
+      if (await Config.refreshToken()) {
+        Log.log(Log.TAG_REQUEST, "Calling Again using new Token", Log.I);
+        getCoValue();
+      }
+    }
   }
 
   @override

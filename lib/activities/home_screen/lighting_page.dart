@@ -35,15 +35,23 @@ class _LightingPageState extends State<LightingPage> {
 
     int statusCode = response.statusCode;
     String responseBody = response.body;
-    print(statusCode);
-    print('RES: .$responseBody.');
-    setState(() {
-      lights = Config().getSwitchValueList(responseBody);
-      lightL = lights[0];
-      lightM = lights[1];
-      lightR = lights[2];
-      lightExt = lights[3];
-    });
+    Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
+    Log.log(Log.TAG_REQUEST, responseBody, Log.I);
+    if (statusCode == 200) {
+      setState(() {
+        lights = Config().getSwitchValueList(responseBody);
+        lightL = lights[0];
+        lightM = lights[1];
+        lightR = lights[2];
+        lightExt = lights[3];
+      });
+    } else if (statusCode == 403) {
+      Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
+      if (await Config.refreshToken()) {
+        Log.log(Log.TAG_REQUEST, "Calling Again using new Token", Log.I);
+        getLight();
+      }
+    }
   }
 
   void changeLight(String light, int varLight, int index) async {
@@ -60,26 +68,34 @@ class _LightingPageState extends State<LightingPage> {
 
     int statusCode = response.statusCode;
     String responseBody = response.body;
-    print(statusCode);
-    print('RES: .$responseBody.');
-    setState(() {
-      switch (varLight) {
-        case 0:
-          lightL = index;
-          break;
-        case 1:
-          lightM = index;
-          break;
-        case 2:
-          lightR = index;
-          break;
-        case 3:
-          lightExt = index;
-          break;
-        default:
-          break;
+    Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
+    Log.log(Log.TAG_REQUEST, responseBody, Log.I);
+    if (statusCode == 200) {
+      setState(() {
+        switch (varLight) {
+          case 0:
+            lightL = index;
+            break;
+          case 1:
+            lightM = index;
+            break;
+          case 2:
+            lightR = index;
+            break;
+          case 3:
+            lightExt = index;
+            break;
+          default:
+            break;
+        }
+      });
+    } else if (statusCode == 403) {
+      Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
+      if (await Config.refreshToken()) {
+        Log.log(Log.TAG_REQUEST, "Calling Again using new Token", Log.I);
+        changeLight(light, varLight, index);
       }
-    });
+    }
   }
 
   @override
