@@ -98,7 +98,7 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
     final uri = Config().urlDoor;
     final headers = {'Content-Type': 'application/json'};
 
-    Map bData = {'command': command};
+    Map bData = {'Command': command};
     final body = json.encode(bData);
 
     http.Response response = await http.post(uri, headers: headers, body: body);
@@ -106,7 +106,6 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
     int statusCode = response.statusCode;
     String responseBody = response.body;
     if (statusCode == 200) {
-      String nStat = Config().getDoorValue(responseBody);
       setState(() {
         setDoorConnectionStatus(responseBody);
         setBtnColors(command);
