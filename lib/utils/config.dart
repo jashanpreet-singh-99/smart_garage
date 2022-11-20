@@ -26,7 +26,7 @@ class Config {
 
   String getDoorValue(String v) {
     Map<String, dynamic> jsonObj = jsonDecode(v);
-    int value = jsonObj["door"];
+    int value = jsonObj["Door"];
     if (value == -1) {
       return "CLOSE";
     } else if (value == 1) {
@@ -121,7 +121,7 @@ class Config {
 
   double getCoLevelJson(String data) {
     final body = json.decode(data);
-    return body["CO"] / 100;
+    return body["Co"] / 100;
   }
 
   static String getConnectionStat(String resp) {
@@ -159,7 +159,7 @@ class Config {
     final headers = {'Content-Type': 'application/json'};
     email = await readFromStorage(KEY_USER, "");
     password = await readFromStorage(KEY_PASS, "");
-    Map bData = {'username': email, 'password': password};
+    Map bData = {'email': email, 'password': password};
     final body = json.encode(bData);
 
     http.Response response = await http.post(uri, headers: headers, body: body);

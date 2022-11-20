@@ -19,7 +19,7 @@ class LoginScreenA extends StatelessWidget {
     final uri = Config.urlLogin;
     final headers = {'Content-Type': 'application/json'};
 
-    Map bData = {'username': email, 'password': password};
+    Map bData = {'email': email, 'password': password};
     final body = json.encode(bData);
 
     http.Response response = await http.post(uri, headers: headers, body: body);
