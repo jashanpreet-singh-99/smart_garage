@@ -144,7 +144,7 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
           shadowColor: Colors.black,
           child: SizedBox(
             width: 300,
-            height: 500,
+            height: 600,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Column(
