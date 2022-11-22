@@ -20,7 +20,7 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
   Color garageStopBtn = Colors.grey;
   Color garageCloseBtn = Colors.grey;
   String resultDebug = "";
-  String stat = "CLOSE";
+  int stat = -1;
 
   Color connectionStat = Colors.blue;
 
@@ -42,7 +42,7 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
     Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
     Log.log(Log.TAG_REQUEST, responseBody, Log.I);
     if (statusCode == 200) {
-      String nStat = Config().getDoorValue(responseBody);
+      int nStat = Config().getDoorValue(responseBody);
       setState(() {
         setBtnColors(nStat);
         setDoorConnectionStatus("{\"status\":1}");
@@ -57,12 +57,12 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
     }
   }
 
-  void setBtnColors(String nStat) {
+  void setBtnColors(int nStat) {
     switch (stat) {
-      case "STOP":
+      case 0:
         garageStopBtn = Colors.grey;
         break;
-      case "CLOSE":
+      case -1:
         garageCloseBtn = Colors.grey;
         break;
       default:
@@ -70,11 +70,11 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
         break;
     }
     switch (nStat) {
-      case "STOP":
+      case 0:
         animationController.stop();
         garageStopBtn = Colors.cyan;
         break;
-      case "CLOSE":
+      case -1:
         if (firstRun) {
         } else {
           animationController.reverse();
@@ -94,7 +94,7 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
     stat = nStat;
   }
 
-  void openCloseDoor(String command) async {
+  void openCloseDoor(int command) async {
     final uri = Config().urlDoor;
     final headers = {'Content-Type': 'application/json'};
 
@@ -105,6 +105,8 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
 
     int statusCode = response.statusCode;
     String responseBody = response.body;
+    Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
+    Log.log(Log.TAG_REQUEST, responseBody, Log.I);
     if (statusCode == 200) {
       setState(() {
         setDoorConnectionStatus(responseBody);
@@ -165,7 +167,7 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
                     child: ElevatedButton(
                       onPressed: () {
                         // Open door
-                        openCloseDoor("OPEN");
+                        openCloseDoor(1);
                       },
                       style: ButtonStyle(
                         backgroundColor:
@@ -179,7 +181,7 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
                     child: ElevatedButton(
                       onPressed: () {
                         // Stop door
-                        openCloseDoor("STOP");
+                        openCloseDoor(0);
                       },
                       style: ButtonStyle(
                         backgroundColor:
@@ -193,7 +195,7 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
                     child: ElevatedButton(
                       onPressed: () {
                         // Close door
-                        openCloseDoor("CLOSE");
+                        openCloseDoor(-1);
                       },
                       style: ButtonStyle(
                         backgroundColor:

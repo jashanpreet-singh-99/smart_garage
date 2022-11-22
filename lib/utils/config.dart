@@ -24,36 +24,31 @@ class Config {
     return "FULL";
   }
 
-  String getDoorValue(String v) {
+  int getDoorValue(String v) {
     Map<String, dynamic> jsonObj = jsonDecode(v);
-    int value = jsonObj["Door"];
-    if (value == -1) {
-      return "CLOSE";
-    } else if (value == 1) {
-      return "OPEN";
-    }
-    return "STOP";
+    return jsonObj["Door"];
   }
 
   int getDoorInt(String value) {
-    if (value == "CLOSE") {
-      return 0;
+    switch (value) {
+      case "OPEN":
+        return 1;
+      case "CLOSE":
+        return -1;
+      default:
+        return 0;
     }
-    return 1;
   }
 
-  String getDoorLockValue(String value) {
-    if (value == "0") {
-      return "UNLOCK";
+  String getDoorString(int value) {
+    switch (value) {
+      case 1:
+        return "OPEN";
+      case -1:
+        return "CLOSE";
+      default:
+        return "STOP";
     }
-    return "LOCK";
-  }
-
-  int getDoorLockInt(String value) {
-    if (value == "UNLOCK") {
-      return 0;
-    }
-    return 1;
   }
 
   String getSwitchValue(String value) {
@@ -140,7 +135,7 @@ class Config {
   }
 
   static void saveToStorage(String key, String value) {
-    print("Saving to local");
+    Log.log(Log.TAG_STORAGE, "Saving to local", Log.I);
     PreferenceManager.setString(key, value);
   }
 
@@ -151,15 +146,18 @@ class Config {
   static const String KEY_AUTH_ID = "auth_id";
   static const String KEY_USER = "user_name";
   static const String KEY_PASS = "user_pass";
+  static const String KEY_DEVICE_ID = "user_id";
 
   static Future<bool> refreshToken() async {
     String email = "";
     String password = "";
+    String device = "";
     final uri = urlLogin;
     final headers = {'Content-Type': 'application/json'};
     email = await readFromStorage(KEY_USER, "");
     password = await readFromStorage(KEY_PASS, "");
-    Map bData = {'email': email, 'password': password};
+    device = await readFromStorage(KEY_DEVICE_ID, "");
+    Map bData = {'email': email, 'password': password, 'Device': device};
     final body = json.encode(bData);
 
     http.Response response = await http.post(uri, headers: headers, body: body);
@@ -184,6 +182,8 @@ class Log {
 
   static const String TAG_SPLASH = "Activity_Splash_Screen";
   static const String TAG_REQUEST = "Network_Requests      ";
+  static const String TAG_STORAGE = "Storage_logs          ";
+  static const String TAG_OPEN_SIGNAL = "One_Signal_logs       ";
 
   static void log(String tag, String message, String type) {
     if (DEBUG) {

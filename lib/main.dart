@@ -8,6 +8,8 @@ import 'package:smart_garage/utils/config.dart';
 
 import 'dart:io' show Platform;
 
+import 'package:smart_garage/utils/preference_manager.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (Platform.isAndroid) {
@@ -34,6 +36,19 @@ class _MyApp extends State<MyApp> {
     if (Platform.isAndroid) {
       OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
       OneSignal.shared.setAppId(Config.API_KEY);
+      OneSignal.shared
+          .setSubscriptionObserver((OSSubscriptionStateChanges changes) {
+        Log.log(Log.TAG_OPEN_SIGNAL, "Token ${changes.to.userId}", Log.I);
+        String? userId = changes.to.userId ?? '';
+        if (userId != '') {
+          Config.saveToStorage(Config.KEY_DEVICE_ID, userId);
+        }
+      });
+      final status = OneSignal.shared.getDeviceState();
+      status.then((value) {
+        final String osUserID = value?.userId ?? "";
+        Log.log(Log.TAG_OPEN_SIGNAL, "Token $osUserID", Log.I);
+      });
       OneSignal.shared
           .promptUserForPushNotificationPermission()
           .then((value) => {});

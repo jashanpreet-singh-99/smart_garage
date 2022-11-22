@@ -36,7 +36,8 @@ class _DashPageState extends State<DashPage> {
     Log.log(Log.TAG_REQUEST, responseBody, Log.I);
     if (statusCode == 200) {
       setState(() {
-        garageDoorStatus = Config().getDoorValue(responseBody);
+        garageDoorStatus =
+            Config().getDoorString(Config().getDoorValue(responseBody));
       });
     } else if (statusCode == 403) {
       Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);

@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:smart_garage/activities/home_screen.dart';
 import 'package:smart_garage/activities/login_screen1.dart';
@@ -38,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Config.token = token;
       Log.log(Log.TAG_SPLASH, "Token present", Log.I);
 
-      bool isValidToken = await checkToken();
+      bool isValidToken = await checkToken(user);
       Log.log(Log.TAG_SPLASH, "Token Check :  $isValidToken", Log.I);
 
       if (isValidToken == true) {
@@ -66,11 +66,14 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  Future<bool> checkToken() async {
+  Future<bool> checkToken(String user) async {
     final uri = Config().urlValid;
     final headers = {'Content-Type': 'application/json'};
+    String userId = await Config.readFromStorage(Config.KEY_DEVICE_ID, "");
 
-    http.Response response = await http.get(uri, headers: headers);
+    Map bData = {'Device': userId, 'email': user};
+    final body = json.encode(bData);
+    http.Response response = await http.post(uri, headers: headers, body: body);
 
     int statusCode = response.statusCode;
     String responseBody = response.body;
