@@ -10,6 +10,11 @@ class Config {
   Uri urlLight = Uri.parse("http://4.229.225.201:5000/light?token=$token");
   Uri urlCo = Uri.parse("http://4.229.225.201:5000/co?token=$token");
   Uri urlValid = Uri.parse("http://4.229.225.201:5000/?token=$token");
+  Uri urlGuest = Uri.parse("http://4.229.225.201:5000/guest?token=$token");
+  Uri urlAddGuest =
+      Uri.parse("http://4.229.225.201:5000/add_guest?token=$token");
+  Uri urlRevokeGuest =
+      Uri.parse("http://4.229.225.201:5000/revoke_guest?token=$token");
 
   static const String API_KEY = "b22e4e51-0fdf-4c75-9d95-f023e9c32c74";
 
@@ -117,6 +122,12 @@ class Config {
   double getCoLevelJson(String data) {
     final body = json.decode(data);
     return body["Co"] / 100;
+  }
+
+  List<dynamic> getGuests(String data) {
+    final body = json.decode(data);
+    List<dynamic> guestList = List.from(body);
+    return guestList;
   }
 
   static String getConnectionStat(String resp) {
