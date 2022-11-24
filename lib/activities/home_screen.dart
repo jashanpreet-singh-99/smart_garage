@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const DashPage(),
     const DoorPage(),
     const LightingPage(),
-    UserPage(),
+    const UserPage(),
   ];
 
   @override
@@ -37,24 +37,24 @@ class _HomeScreenState extends State<HomeScreen> {
           onTap: (index) {
             provider.currentIndex = index;
           },
-          items: [
+          items: const [
             BottomNavigationBarItem(
-              icon: new Icon(Icons.home),
+              icon: Icon(Icons.home),
               label: 'Dash',
               backgroundColor: Colors.cyan,
             ),
             BottomNavigationBarItem(
-              icon: new Icon(Icons.door_back_door_outlined),
+              icon: Icon(Icons.door_back_door_outlined),
               label: 'Door',
               backgroundColor: Colors.cyan,
             ),
             BottomNavigationBarItem(
-              icon: new Icon(Icons.light),
+              icon: Icon(Icons.light),
               label: 'Lights',
               backgroundColor: Colors.cyan,
             ),
             BottomNavigationBarItem(
-              icon: new Icon(Icons.people),
+              icon: Icon(Icons.people),
               label: 'User',
               backgroundColor: Colors.cyan,
             ),
