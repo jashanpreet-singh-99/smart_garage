@@ -6,7 +6,7 @@ import 'package:smart_garage/activities/home_screen.dart';
 import 'package:smart_garage/activities/login_screen1.dart';
 import 'package:smart_garage/activities/login_screen.dart';
 import 'package:smart_garage/activities/signUp_view.dart';
-
+import 'package:smart_garage/activities/signUp_view1.dart';
 import '../utils/config.dart';
 
 import 'package:http/http.dart' as http;
@@ -64,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const LoginScreenA()), /*LoginScreenA())*/
+                builder: (context) => const SignUpView1()), /*LoginScreenA())*/
           );
         });
       }
@@ -73,7 +73,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => const LoginScreenA()), /*LoginScreenA()),*/
+              builder: (context) => const SignUpView1()), /*LoginScreenA()),*/
         );
       });
     }
