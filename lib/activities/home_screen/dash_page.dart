@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:smart_garage/utils/config.dart';
 
+import '../splash_screen.dart';
+
 class DashPage extends StatefulWidget {
   const DashPage({
     Key? key,
@@ -120,7 +122,7 @@ class _DashPageState extends State<DashPage> {
             shadowColor: Colors.black,
             child: SizedBox(
               width: 300,
-              height: 500,
+              height: 540,
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Column(
@@ -201,6 +203,39 @@ class _DashPageState extends State<DashPage> {
                             ),
                           ),
                         ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Config.saveToStorage(Config.KEY_USER, Config.NONE);
+                          Config.saveToStorage(Config.KEY_PASS, Config.NONE);
+                          Config.saveToStorage(Config.KEY_AUTH_ID, Config.NONE);
+                          Config.token = "";
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SplashScreen()),
+                          );
+                        },
+                        style: ButtonStyle(
+                          shadowColor: MaterialStateProperty.all<Color>(
+                              Colors.transparent),
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Colors.transparent),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                            side: const BorderSide(color: Colors.cyan),
+                          )),
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Text("Logout",
+                              style: TextStyle(color: Colors.cyan)),
+                        ),
                       ),
                     ),
                   ],
