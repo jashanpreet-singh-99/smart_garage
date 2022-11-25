@@ -15,6 +15,7 @@ class Config {
       Uri.parse("http://4.229.225.201:5000/add_guest?token=$token");
   Uri urlRevokeGuest =
       Uri.parse("http://4.229.225.201:5000/revoke_guest?token=$token");
+  Uri urlSignUp = Uri.parse("http://4.229.225.201:5000/sign_up");
 
   static const String API_KEY = "b22e4e51-0fdf-4c75-9d95-f023e9c32c74";
 

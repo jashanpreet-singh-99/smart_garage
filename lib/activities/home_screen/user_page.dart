@@ -24,6 +24,32 @@ class _UserPageState extends State<UserPage> {
     getGuestAccess();
   }
 
+  Future openDialog() => showDialog(
+
+      context: this.context,
+
+      builder: (context) => AlertDialog(
+
+        title: Text('Error'),
+
+        content: Text(
+
+            'Maximum Guests limit reached. please delete previous Guests'),
+
+        actions: [
+
+          TextButton(
+
+            child: Text('OK'),
+
+            onPressed: (Navigator.of(context).pop),
+
+          )
+
+        ],
+
+      ));
+
   Future<void> getGuestAccess() async {
     final uri = Config().urlGuest;
     final headers = {'Content-Type': 'application/json'};
@@ -276,10 +302,11 @@ class _UserPageState extends State<UserPage> {
                         ),
                         ElevatedButton(
                           onPressed: () {
+                            //openDialog();
                             if (guestList.length < 3) {
                               addGuest();
                             } else {
-                              // Show a dialog that u cannot add more guest
+                              openDialog();// Show a dialog that u cannot add more guest
                             }
                           },
                           style: ButtonStyle(
@@ -322,4 +349,5 @@ class _UserPageState extends State<UserPage> {
       ),
     );
   }
+
 }

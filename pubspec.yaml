@@ -47,6 +47,8 @@ dependencies:
   firebase_core: ^2.2.0
   cloud_firestore: ^4.0.5
   shared_preferences: ^2.0.15
+  google_fonts: ^3.0.1
+  get:
 
 dev_dependencies:
   flutter_test:
@@ -73,6 +75,8 @@ flutter:
     - assets/garage.png
     - assets/light_icon.png
     - assets/garage_door.json
+    - assets/wave.json
+    - assets/coin.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:

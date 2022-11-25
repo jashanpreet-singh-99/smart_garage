@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:smart_garage/activities/home_screen.dart';
 import 'package:smart_garage/activities/login_screen1.dart';
+import 'package:smart_garage/activities/login_screen.dart';
+import 'package:smart_garage/activities/signUp_view.dart';
 
 import '../utils/config.dart';
 
@@ -52,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Timer(const Duration(milliseconds: 1000), () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const LoginScreenA()),
+            MaterialPageRoute(builder: (context) => const  SignUpView()),/*LoginScreenA())*/
           );
         });
       }
@@ -60,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Timer(const Duration(milliseconds: 1000), () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const LoginScreenA()),
+          MaterialPageRoute(builder: (context) => const SignUpView()),/*LoginScreenA()),*/
         );
       });
     }
