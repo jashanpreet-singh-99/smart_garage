@@ -10,9 +10,10 @@ import 'package:smart_garage/activities/home_screen/dash_page.dart';
 import '../utils/config.dart';
 import 'home_screen.dart';
 import 'package:http/http.dart' as http;
-
+import 'guest_screen.dart';
 import 'package:smart_garage/utils/constants.dart';
 import 'package:smart_garage/controller/simple_ui_controller.dart';
+
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -25,29 +26,92 @@ const users = {
   '1111': '1111',
 };
 
+
 class _LoginViewState extends State<LoginView> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  int admin =0;
+
   //String welcomeText = "Admin";
 
   final _formKey = GlobalKey<FormState>();
   String nologin = "";
+  Uri loginUri = Config.urlLogin;
+  int admin =0;
   static const Duration loginTime = Duration(seconds: 1);
-
-  //login functions
-  Future<bool> getToken(String email, String password) async {
-    final uri = Config.urlLogin;
+  //guest
+  Future<bool> getTokenGuest(String email, String password) async {
+    final uri = Config.urlLoginGuest;
     final headers = {'Content-Type': 'application/json'};
 
-    Map bData = {'email': email, 'password': password, 'Device': ""};
+    String userId = await Config.readFromStorage(Config.KEY_DEVICE_ID, "");
+    Map bData = {'email': email, 'password': password};
     final body = json.encode(bData);
 
     http.Response response = await http.post(uri, headers: headers, body: body);
 
     int statusCode = response.statusCode;
     String responseBody = response.body;
+    print('admin value insdie toek functio $admin');
+    print('name :' +nameController.text);
+    print('pass :' +passwordController.text);
+    print('Device ID :' +userId);
+    Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
+    Log.log(Log.TAG_REQUEST, responseBody, Log.I);
+    if (statusCode == 200) {
+      String t = Config.getToken(responseBody);
+      Log.log(Log.TAG_REQUEST, "Saving token Locally.", Log.I);
+      Config.saveToStorage(Config.KEY_AUTH_ID, t);
+      return true;
+    }
+    return false;
+  }
+
+  Future<String?> _authUserGuest(TextEditingController name, TextEditingController pass) async {
+    debugPrint('Name: ${name.text}, Password: ${pass.text}');
+    if (await getTokenGuest(name.text, pass.text)) {
+      print("password is correct");
+      Config.saveToStorage(Config.KEY_USER, name.text);
+      Config.saveToStorage(Config.KEY_PASS, pass.text);
+      Config.saveToStorage(
+          Config.KEY_ROLE, Config.ROLE_GUEST  );
+
+      return Future.delayed(const Duration(microseconds: 1)).then((_) {
+        return  Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) {
+            if (admin == 1) {
+              return const GuestScreen();
+            } else {
+              return const HomeScreen();
+            }
+          },
+        ));
+      });
+    } else {
+      print("password incorrect");
+      setState(() {
+        nologin = "User or Password is Incorrect";
+      });
+      return null;
+    }}
+
+      //login functions
+  Future<bool> getToken(String email, String password) async {
+    final uri = loginUri;
+    final headers = {'Content-Type': 'application/json'};
+
+    String userId = await Config.readFromStorage(Config.KEY_DEVICE_ID, "");
+    Map bData = {'email': email, 'password': password, 'Device': userId};
+    final body = json.encode(bData);
+
+    http.Response response = await http.post(uri, headers: headers, body: body);
+
+    int statusCode = response.statusCode;
+    String responseBody = response.body;
+    print('admin value insdie toek functio $admin');
+    print('name :' +nameController.text);
+    print('pass :' +passwordController.text);
+    print('Device ID :' +userId);
     Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
     Log.log(Log.TAG_REQUEST, responseBody, Log.I);
     if (statusCode == 200) {
@@ -62,15 +126,25 @@ class _LoginViewState extends State<LoginView> {
   Future<String?> _authUser(TextEditingController name, TextEditingController pass) async {
     debugPrint('Name: ${name.text}, Password: ${pass.text}');
     if (await getToken(name.text, pass.text)) {
+      print("password is correct");
       Config.saveToStorage(Config.KEY_USER, name.text);
       Config.saveToStorage(Config.KEY_PASS, pass.text);
+      Config.saveToStorage(
+          Config.KEY_ROLE, (admin == 0) ? Config.ROLE_ADMIN : Config.ROLE_GUEST);
+
       return Future.delayed(const Duration(microseconds: 1)).then((_) {
-        return  Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-        );
+        return  Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) {
+            if (admin == 0) {
+              return const HomeScreen();
+            } else {
+              return const GuestScreen();
+            }
+          },
+        ));
       });
     } else {
+      print("password incorrect");
       setState(() {
         nologin = "User or Password is Incorrect";
       });
@@ -266,7 +340,7 @@ class _LoginViewState extends State<LoginView> {
                     if( isValid == true)
                     {return null; }
                     else
-                      return 'please enter valid gmail';
+                      return 'please enter valid email';
                   },
                 ),
                 // SizedBox(
@@ -355,10 +429,23 @@ class _LoginViewState extends State<LoginView> {
                   curve: Curves
                       .bounceInOut, // animate must be set to true when using custom curve
                   onToggle: (index) {
-                    if (index == 1) {
+                    if (index == 1)  {
+                      setState(() {
+
+                        admin =1;
+                        loginUri = Config.urlLoginGuest;
+                        Log.log(
+                            Log.TAG_REQUEST, "Switching to $index Guest", Log.I);
+                      });
 
                       // call guest
                     } else if (index == 0) {
+                      setState(() {
+                        admin =0;
+                        loginUri = Config.urlLogin;
+                        Log.log(
+                            Log.TAG_REQUEST, "Switching to $index Family", Log.I);
+                      });
 
 
                       // call admin
@@ -432,17 +519,26 @@ class _LoginViewState extends State<LoginView> {
         ),
         onPressed: () async {
           // Validate returns true if the form is valid, or false otherwise.
-
+          print('toggle value $admin');
           print('button pressed');
           setState(() {
             nologin ="";
           });
-          if (_formKey.currentState!.validate()) {
+
+          if(admin == 0) {
+            _authUser(nameController, passwordController);
+          }
+          else if(admin == 1) {
+            _authUserGuest(nameController, passwordController);
+          }
+          print('toggle value $admin');
+          print('url $loginUri');
+          //if (_formKey.currentState!.validate()) {
 
 
          // if( await getToken(emailController.text, passwordController.text)) {
             //print('authetication completed');
-            _authUser(nameController,passwordController);
+            //_authUser(nameController,passwordController);
             //Navigator.push(
               //context,
               //MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -451,7 +547,7 @@ class _LoginViewState extends State<LoginView> {
           //_authUser();
 
             // ... Navigate To your Home Page
-          }
+          //}
         },
         child: const Text('Login'),
       ),

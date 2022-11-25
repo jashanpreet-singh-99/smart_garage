@@ -58,6 +58,14 @@ class _SignUpViewState extends State<SignUpView> {
     String responseBody = response.body;
     Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
     Log.log(Log.TAG_REQUEST, responseBody, Log.I);
+
+    if(statusCode == 200)
+      {
+        Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LoginView()),
+            );
+      }
   }
 
   @override
