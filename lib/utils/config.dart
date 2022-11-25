@@ -6,6 +6,7 @@ import 'package:smart_garage/utils/preference_manager.dart';
 
 class Config {
   static Uri urlLogin = Uri.parse("http://4.229.225.201:5000/login");
+  static Uri urlLoginGuest = Uri.parse("http://4.229.225.201:5000/login_guest");
   Uri urlDoor = Uri.parse("http://4.229.225.201:5000/door?token=$token");
   Uri urlLight = Uri.parse("http://4.229.225.201:5000/light?token=$token");
   Uri urlCo = Uri.parse("http://4.229.225.201:5000/co?token=$token");
@@ -18,6 +19,9 @@ class Config {
   Uri urlSignUp = Uri.parse("http://4.229.225.201:5000/sign_up");
 
   static const String API_KEY = "b22e4e51-0fdf-4c75-9d95-f023e9c32c74";
+
+  static const String ROLE_ADMIN = "Admin";
+  static const String ROLE_GUEST = "Guest";
 
   static String token = "";
 
@@ -159,18 +163,23 @@ class Config {
   static const String KEY_USER = "user_name";
   static const String KEY_PASS = "user_pass";
   static const String KEY_DEVICE_ID = "user_id";
+  static const String KEY_ROLE = "user_role";
 
   static Future<bool> refreshToken() async {
     String email = "";
     String password = "";
     String device = "";
-    final uri = urlLogin;
+    var uri = urlLogin;
     final headers = {'Content-Type': 'application/json'};
     email = await readFromStorage(KEY_USER, NONE);
     password = await readFromStorage(KEY_PASS, NONE);
     device = await readFromStorage(KEY_DEVICE_ID, "");
+    String role = await readFromStorage(KEY_ROLE, ROLE_ADMIN);
     if (email == NONE || password == NONE) {
       return false;
+    }
+    if (role == ROLE_GUEST) {
+      uri = urlLoginGuest;
     }
     Map bData = {'email': email, 'password': password, 'Device': device};
     final body = json.encode(bData);

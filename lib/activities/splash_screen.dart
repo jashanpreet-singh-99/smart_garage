@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:smart_garage/activities/guest_screen.dart';
 import 'package:smart_garage/activities/home_screen.dart';
 import 'package:smart_garage/activities/login_screen1.dart';
 import 'package:smart_garage/activities/login_screen.dart';
@@ -33,6 +34,8 @@ class _SplashScreenState extends State<SplashScreen> {
         await Config.readFromStorage(Config.KEY_AUTH_ID, Config.NONE);
     String user = await Config.readFromStorage(Config.KEY_USER, Config.NONE);
     String pass = await Config.readFromStorage(Config.KEY_PASS, Config.NONE);
+    String role =
+        await Config.readFromStorage(Config.KEY_ROLE, Config.ROLE_ADMIN);
 
     Log.log(Log.TAG_SPLASH, "$token $user $pass", Log.I);
 
@@ -47,14 +50,21 @@ class _SplashScreenState extends State<SplashScreen> {
         Timer(const Duration(milliseconds: 1000), () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
+            MaterialPageRoute(builder: (context) {
+              if (role == Config.ROLE_ADMIN) {
+                return const HomeScreen();
+              } else {
+                return const GuestScreen();
+              }
+            }),
           );
         });
       } else {
         Timer(const Duration(milliseconds: 1000), () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const  SignUpView()),/*LoginScreenA())*/
+            MaterialPageRoute(
+                builder: (context) => const LoginScreenA()), /*LoginScreenA())*/
           );
         });
       }
@@ -62,7 +72,8 @@ class _SplashScreenState extends State<SplashScreen> {
       Timer(const Duration(milliseconds: 1000), () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const SignUpView()),/*LoginScreenA()),*/
+          MaterialPageRoute(
+              builder: (context) => const LoginScreenA()), /*LoginScreenA()),*/
         );
       });
     }

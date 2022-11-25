@@ -1,17 +1,34 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter_login/flutter_login.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 import '../utils/config.dart';
+import 'guest_screen.dart';
 import 'home_screen.dart';
 
 import 'package:http/http.dart' as http;
 
-class LoginScreenA extends StatelessWidget {
-  const LoginScreenA({super.key});
+class LoginScreenA extends StatefulWidget {
+  const LoginScreenA({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<LoginScreenA> createState() {
+    return _LoginScreenAState();
+  }
+}
+
+class _LoginScreenAState extends State<LoginScreenA> {
   static const Duration loginTime = Duration(seconds: 1);
 
+  Uri loginUri = Config.urlLogin;
+  int mode = 0;
+
   Future<bool> getToken(String email, String password) async {
-    final uri = Config.urlLogin;
+    final uri = loginUri;
     final headers = {'Content-Type': 'application/json'};
 
     String userId = await Config.readFromStorage(Config.KEY_DEVICE_ID, "");
@@ -38,13 +55,14 @@ class LoginScreenA extends StatelessWidget {
     if (await getToken(data.name, data.password)) {
       Config.saveToStorage(Config.KEY_USER, data.name);
       Config.saveToStorage(Config.KEY_PASS, data.password);
+      Config.saveToStorage(
+          Config.KEY_ROLE, (mode == 0) ? Config.ROLE_ADMIN : Config.ROLE_GUEST);
+
       return Future.delayed(const Duration(microseconds: 1)).then((_) {
         return null;
       });
     } else {
-      return Future.delayed(loginTime).then((_) {
-        return null;
-      });
+      return 'Email address and password combination are in correct.';
     }
   }
 
@@ -52,13 +70,6 @@ class LoginScreenA extends StatelessWidget {
     debugPrint('Signup Name: ${data.name}, Password: ${data.password}');
     return Future.delayed(loginTime).then((_) {
       return null;
-    });
-  }
-
-  Future<String> _recoverPassword(String name) {
-    debugPrint('Name: $name');
-    return Future.delayed(loginTime).then((_) {
-      return null!;
     });
   }
 
@@ -71,10 +82,65 @@ class LoginScreenA extends StatelessWidget {
       onSignup: _signUpUser,
       onSubmitAnimationCompleted: () {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
+          builder: (context) {
+            if (mode == 0) {
+              return const HomeScreen();
+            } else {
+              return const GuestScreen();
+            }
+          },
         ));
       },
-      onRecoverPassword: _recoverPassword,
+      userType: LoginUserType.email,
+      onRecoverPassword: (_) => Future(() => null),
+      hideForgotPasswordButton: true,
+      messages: LoginMessages(
+        userHint: 'Email address',
+        passwordHint: 'Password',
+        confirmPasswordHint: 'Confirm Password',
+        loginButton: 'LOG IN',
+        signupButton: 'SIGN UP',
+        forgotPasswordButton: '',
+        recoverPasswordButton: 'UNAVAILABLE',
+        goBackButton: 'GO BACK',
+        confirmPasswordError: 'Not match!',
+        recoverPasswordDescription:
+            'This feature is not available for you. Please contact the Application service provider.',
+      ),
+      children: [
+        Padding(
+            padding: const EdgeInsets.fromLTRB(0, 400, 0, 0),
+            child: Card(
+              elevation: 4,
+              child: SizedBox(
+                height: 40,
+                child: ToggleSwitch(
+                  initialLabelIndex: 0,
+                  totalSwitches: 2,
+                  cornerRadius: 15.0,
+                  radiusStyle: true,
+                  activeBgColor: const [Colors.white],
+                  activeFgColor: Colors.lightBlue,
+                  inactiveBgColor: Colors.grey,
+                  inactiveFgColor: Colors.black38,
+                  labels: const ['Family', 'Guest'],
+                  onToggle: (index) {
+                    if (index == 1) {
+                      mode = 1;
+                      loginUri = Config.urlLoginGuest;
+                      Log.log(
+                          Log.TAG_REQUEST, "Switching to $index Guest", Log.I);
+                    } else {
+                      mode = 0;
+                      loginUri = Config.urlLogin;
+                      Log.log(
+                          Log.TAG_REQUEST, "Switching to $index Family", Log.I);
+                    }
+                  },
+                ),
+              ),
+            )),
+      ],
     );
   }
 }
