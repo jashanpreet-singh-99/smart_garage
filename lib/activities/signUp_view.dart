@@ -46,8 +46,8 @@ class _SignUpViewState extends State<SignUpView> {
     Map bData = {
       'email': email.text,
       'password': password.text,
-      'first': first.text,
-      'last': last.text
+      'first_name': first.text,
+      'last_name': last.text
     };
     final body = json.encode(bData);
 
