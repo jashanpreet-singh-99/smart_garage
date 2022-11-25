@@ -25,30 +25,50 @@ class _UserPageState extends State<UserPage> {
   }
 
   Future openDialog() => showDialog(
-
-      context: this.context,
-
+      context: context,
       builder: (context) => AlertDialog(
-
-        title: Text('Error'),
-
-        content: Text(
-
-            'Maximum Guests limit reached. please delete previous Guests'),
-
-        actions: [
-
-          TextButton(
-
-            child: Text('OK'),
-
-            onPressed: (Navigator.of(context).pop),
-
-          )
-
-        ],
-
-      ));
+            title: const Padding(
+              padding: EdgeInsets.fromLTRB(2, 2, 2, 0),
+              child: Text('Guest Limit Error'),
+            ),
+            content: const Padding(
+              padding: EdgeInsets.fromLTRB(2, 0, 2, 0),
+              child: Text(
+                  'Maximum Guests limit reached. Please delete previous Guests in order to generate new ones.'),
+            ),
+            actions: [
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(2, 0, 2, 10),
+                    child: ElevatedButton(
+                      onPressed: (Navigator.of(context).pop),
+                      style: ButtonStyle(
+                        shadowColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.cyan),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                        ),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text("Okay",
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 16)),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ));
 
   Future<void> getGuestAccess() async {
     final uri = Config().urlGuest;
@@ -71,9 +91,9 @@ class _UserPageState extends State<UserPage> {
     if (statusCode == 200) {
       setState(() {
         guestList = Config().getGuests(responseBody);
-        guestList.forEach((element) {
+        for (var element in guestList) {
           Log.log(Log.TAG_REQUEST, "GUEST: ${element['email']}", Log.I);
-        });
+        }
       });
     } else if (statusCode == 403) {
       Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
@@ -106,16 +126,12 @@ class _UserPageState extends State<UserPage> {
       setState(() {
         final body = json.decode(responseBody);
         guestList.add(body);
-        // guestList = Config().getGuests(responseBody);
-        // guestList.forEach((element) {
-        //   Log.log(Log.TAG_REQUEST, "GUEST: ${element['email']}", Log.I);
-        // });
       });
     } else if (statusCode == 403) {
       Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
       if (await Config.refreshToken()) {
         Log.log(Log.TAG_REQUEST, "Calling Again using new Token", Log.I);
-        getGuestAccess();
+        addGuest();
       }
     }
   }
@@ -302,11 +318,11 @@ class _UserPageState extends State<UserPage> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            //openDialog();
                             if (guestList.length < 3) {
                               addGuest();
                             } else {
-                              openDialog();// Show a dialog that u cannot add more guest
+                              openDialog();
+                              // Show a dialog that u cannot add more guest
                             }
                           },
                           style: ButtonStyle(
@@ -349,5 +365,4 @@ class _UserPageState extends State<UserPage> {
       ),
     );
   }
-
 }
