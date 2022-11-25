@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:smart_garage/activities/splash_screen.dart';
 
 import '../../utils/config.dart';
 
@@ -210,26 +211,66 @@ class _UserPageState extends State<UserPage> {
                   ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ButtonStyle(
-                    shadowColor:
-                        MaterialStateProperty.all<Color>(Colors.transparent),
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.transparent),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      side: const BorderSide(color: Colors.cyan),
-                    )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ButtonStyle(
+                        shadowColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          side: const BorderSide(color: Colors.cyan),
+                        )),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child:
+                            Text("Edit", style: TextStyle(color: Colors.cyan)),
+                      ),
+                    ),
                   ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Text("Edit", style: TextStyle(color: Colors.cyan)),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Config.saveToStorage(Config.KEY_USER, Config.NONE);
+                        Config.saveToStorage(Config.KEY_PASS, Config.NONE);
+                        Config.saveToStorage(Config.KEY_AUTH_ID, Config.NONE);
+                        Config.token = "";
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SplashScreen()),
+                        );
+                      },
+                      style: ButtonStyle(
+                        shadowColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          side: const BorderSide(color: Colors.cyan),
+                        )),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Text("Logout",
+                            style: TextStyle(color: Colors.cyan)),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
               Card(
                 shape: RoundedRectangleBorder(

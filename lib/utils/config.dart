@@ -166,9 +166,12 @@ class Config {
     String device = "";
     final uri = urlLogin;
     final headers = {'Content-Type': 'application/json'};
-    email = await readFromStorage(KEY_USER, "");
-    password = await readFromStorage(KEY_PASS, "");
+    email = await readFromStorage(KEY_USER, NONE);
+    password = await readFromStorage(KEY_PASS, NONE);
     device = await readFromStorage(KEY_DEVICE_ID, "");
+    if (email == NONE || password == NONE) {
+      return false;
+    }
     Map bData = {'email': email, 'password': password, 'Device': device};
     final body = json.encode(bData);
 
