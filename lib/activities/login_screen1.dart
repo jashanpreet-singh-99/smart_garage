@@ -6,11 +6,6 @@ import 'home_screen.dart';
 
 import 'package:http/http.dart' as http;
 
- const users = {
-  'smartgarage@gmail.com': '12345',
-  '1111': '1111',
-};
-
 class LoginScreenA extends StatelessWidget {
   const LoginScreenA({super.key});
   static const Duration loginTime = Duration(seconds: 1);
@@ -19,7 +14,8 @@ class LoginScreenA extends StatelessWidget {
     final uri = Config.urlLogin;
     final headers = {'Content-Type': 'application/json'};
 
-    Map bData = {'email': email, 'password': password};
+    String userId = await Config.readFromStorage(Config.KEY_DEVICE_ID, "");
+    Map bData = {'email': email, 'password': password, "Device": userId};
     final body = json.encode(bData);
 
     http.Response response = await http.post(uri, headers: headers, body: body);
@@ -47,12 +43,6 @@ class LoginScreenA extends StatelessWidget {
       });
     } else {
       return Future.delayed(loginTime).then((_) {
-        if (!users.containsKey(data.name)) {
-          return 'Invalid email';
-        }
-        if (users[data.name] != data.password) {
-          return 'Password does not match';
-        }
         return null;
       });
     }
@@ -68,9 +58,6 @@ class LoginScreenA extends StatelessWidget {
   Future<String> _recoverPassword(String name) {
     debugPrint('Name: $name');
     return Future.delayed(loginTime).then((_) {
-      if (!users.containsKey(name)) {
-        return 'User not exists';
-      }
       return null!;
     });
   }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:smart_garage/activities/splash_screen.dart';
 
 import '../../utils/config.dart';
 
@@ -25,30 +26,50 @@ class _UserPageState extends State<UserPage> {
   }
 
   Future openDialog() => showDialog(
-
-      context: this.context,
-
+      context: context,
       builder: (context) => AlertDialog(
-
-        title: Text('Error'),
-
-        content: Text(
-
-            'Maximum Guests limit reached. please delete previous Guests'),
-
-        actions: [
-
-          TextButton(
-
-            child: Text('OK'),
-
-            onPressed: (Navigator.of(context).pop),
-
-          )
-
-        ],
-
-      ));
+            title: const Padding(
+              padding: EdgeInsets.fromLTRB(2, 2, 2, 0),
+              child: Text('Guest Limit Error'),
+            ),
+            content: const Padding(
+              padding: EdgeInsets.fromLTRB(2, 0, 2, 0),
+              child: Text(
+                  'Maximum Guests limit reached. Please delete previous Guests in order to generate new ones.'),
+            ),
+            actions: [
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(2, 0, 2, 10),
+                    child: ElevatedButton(
+                      onPressed: (Navigator.of(context).pop),
+                      style: ButtonStyle(
+                        shadowColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.cyan),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                        ),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text("Okay",
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 16)),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ));
 
   Future<void> getGuestAccess() async {
     final uri = Config().urlGuest;
@@ -71,9 +92,9 @@ class _UserPageState extends State<UserPage> {
     if (statusCode == 200) {
       setState(() {
         guestList = Config().getGuests(responseBody);
-        guestList.forEach((element) {
+        for (var element in guestList) {
           Log.log(Log.TAG_REQUEST, "GUEST: ${element['email']}", Log.I);
-        });
+        }
       });
     } else if (statusCode == 403) {
       Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
@@ -106,16 +127,12 @@ class _UserPageState extends State<UserPage> {
       setState(() {
         final body = json.decode(responseBody);
         guestList.add(body);
-        // guestList = Config().getGuests(responseBody);
-        // guestList.forEach((element) {
-        //   Log.log(Log.TAG_REQUEST, "GUEST: ${element['email']}", Log.I);
-        // });
       });
     } else if (statusCode == 403) {
       Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
       if (await Config.refreshToken()) {
         Log.log(Log.TAG_REQUEST, "Calling Again using new Token", Log.I);
-        getGuestAccess();
+        addGuest();
       }
     }
   }
@@ -194,26 +211,66 @@ class _UserPageState extends State<UserPage> {
                   ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ButtonStyle(
-                    shadowColor:
-                        MaterialStateProperty.all<Color>(Colors.transparent),
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.transparent),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      side: const BorderSide(color: Colors.cyan),
-                    )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ButtonStyle(
+                        shadowColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          side: const BorderSide(color: Colors.cyan),
+                        )),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child:
+                            Text("Edit", style: TextStyle(color: Colors.cyan)),
+                      ),
+                    ),
                   ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Text("Edit", style: TextStyle(color: Colors.cyan)),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Config.saveToStorage(Config.KEY_USER, Config.NONE);
+                        Config.saveToStorage(Config.KEY_PASS, Config.NONE);
+                        Config.saveToStorage(Config.KEY_AUTH_ID, Config.NONE);
+                        Config.token = "";
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SplashScreen()),
+                        );
+                      },
+                      style: ButtonStyle(
+                        shadowColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          side: const BorderSide(color: Colors.cyan),
+                        )),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Text("Logout",
+                            style: TextStyle(color: Colors.cyan)),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
               Card(
                 shape: RoundedRectangleBorder(
@@ -302,11 +359,11 @@ class _UserPageState extends State<UserPage> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            //openDialog();
                             if (guestList.length < 3) {
                               addGuest();
                             } else {
-                              openDialog();// Show a dialog that u cannot add more guest
+                              openDialog();
+                              // Show a dialog that u cannot add more guest
                             }
                           },
                           style: ButtonStyle(
@@ -349,5 +406,4 @@ class _UserPageState extends State<UserPage> {
       ),
     );
   }
-
 }
