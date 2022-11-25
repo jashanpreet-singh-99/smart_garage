@@ -67,7 +67,7 @@ class _MyApp extends State<MyApp> {
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primarySwatch: Colors.cyan,
         ),
         home: const SplashScreen(),
       ),

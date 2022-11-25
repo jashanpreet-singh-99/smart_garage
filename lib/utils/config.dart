@@ -11,11 +11,17 @@ class Config {
   Uri urlLight = Uri.parse("http://4.229.225.201:5000/light?token=$token");
   Uri urlCo = Uri.parse("http://4.229.225.201:5000/co?token=$token");
   Uri urlValid = Uri.parse("http://4.229.225.201:5000/?token=$token");
+  Uri urlUser = Uri.parse("http://4.229.225.201:5000/user?token=$token");
+  Uri urlUserUpdate =
+      Uri.parse("http://4.229.225.201:5000/update_profile?token=$token");
   Uri urlGuest = Uri.parse("http://4.229.225.201:5000/guest?token=$token");
   Uri urlAddGuest =
       Uri.parse("http://4.229.225.201:5000/add_guest?token=$token");
   Uri urlRevokeGuest =
       Uri.parse("http://4.229.225.201:5000/revoke_guest?token=$token");
+  Uri urlVehicles = Uri.parse("http://4.229.225.201:5000/vehicle?token=$token");
+  Uri urlRemoveVehicle =
+      Uri.parse("http://4.229.225.201:5000/remove_vehicle?token=$token");
   Uri urlSignUp = Uri.parse("http://4.229.225.201:5000/sign_up");
 
   static const String API_KEY = "b22e4e51-0fdf-4c75-9d95-f023e9c32c74";
@@ -129,10 +135,10 @@ class Config {
     return body["Co"] / 100;
   }
 
-  List<dynamic> getGuests(String data) {
+  List<dynamic> getList(String data) {
     final body = json.decode(data);
-    List<dynamic> guestList = List.from(body);
-    return guestList;
+    List<dynamic> lList = List.from(body);
+    return lList;
   }
 
   static String getConnectionStat(String resp) {
@@ -208,6 +214,7 @@ class Log {
   static const String TAG_REQUEST = "Network_Requests      ";
   static const String TAG_STORAGE = "Storage_logs          ";
   static const String TAG_OPEN_SIGNAL = "One_Signal_logs       ";
+  static const String TAG_DIALOG = "Dialog_messages       ";
 
   static void log(String tag, String message, String type) {
     if (DEBUG) {
