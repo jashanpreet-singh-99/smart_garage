@@ -70,7 +70,7 @@ class _LoginViewState extends State<LoginView> {
         );
       });
     } else {
-      return Future.delayed(loginTime).then((_) {
+      return null;/*Future.delayed(loginTime).then((_) {
         if (!users.containsKey(data.name)) {
           return 'Invalid email';
         }
@@ -78,7 +78,7 @@ class _LoginViewState extends State<LoginView> {
           return 'Password does not match';
         }
         return null;
-      });
+      });*/
     }
   }
 
@@ -424,10 +424,10 @@ class _LoginViewState extends State<LoginView> {
          // if( await getToken(emailController.text, passwordController.text)) {
             //print('authetication completed');
             _authUser;
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HomeScreen()),
-            );
+            //Navigator.push(
+              //context,
+              //MaterialPageRoute(builder: (context) => HomeScreen()),
+            //);
          // }
           //_authUser();
           if (_formKey.currentState!.validate()) {
