@@ -9,6 +9,7 @@ import 'package:smart_garage/utils/config.dart';
 import 'package:smart_garage/activities/login_screen.dart';
 import 'package:smart_garage/utils/constants.dart';
 import 'package:smart_garage/controller/simple_ui_controller.dart';
+import 'package:email_validator/email_validator.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({Key? key}) : super(key: key);
@@ -221,19 +222,25 @@ class _SignUpViewState extends State<SignUpView> {
                   controller: emailController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.email_rounded),
-                    hintText: 'gmail',
+                    hintText: 'email',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                     ),
                   ),
                   // The validator receives the text that the user has entered.
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+
+                    final bool isValid = EmailValidator.validate(value!);
+                    if( isValid == true)
+                      {return null; }
+                      else
+                        return 'please enter valid gmail';
+                    /*if (value == null || value.isEmpty) {
                       return 'Please enter gmail';
                     } else if (!value.endsWith('@gmail.com')) {
                       return 'please enter valid gmail';
                     }
-                    return null;
+                    return null;*/
                   },
                 ),
                 SizedBox(

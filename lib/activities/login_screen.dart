@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:get/get.dart';
@@ -32,7 +33,7 @@ class _LoginViewState extends State<LoginView> {
   //String welcomeText = "Admin";
 
   final _formKey = GlobalKey<FormState>();
-
+  String nologin = "";
   static const Duration loginTime = Duration(seconds: 1);
 
   //login functions
@@ -58,18 +59,22 @@ class _LoginViewState extends State<LoginView> {
     return false;
   }
 
-  Future<String?> _authUser(LoginData data) async {
-    debugPrint('Name: ${data.name}, Password: ${data.password}');
-    if (await getToken(data.name, data.password)) {
-      Config.saveToStorage(Config.KEY_USER, data.name);
-      Config.saveToStorage(Config.KEY_PASS, data.password);
+  Future<String?> _authUser(TextEditingController name, TextEditingController pass) async {
+    debugPrint('Name: ${name.text}, Password: ${pass.text}');
+    if (await getToken(name.text, pass.text)) {
+      Config.saveToStorage(Config.KEY_USER, name.text);
+      Config.saveToStorage(Config.KEY_PASS, pass.text);
       return Future.delayed(const Duration(microseconds: 1)).then((_) {
         return  Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => DashPage()),
+          MaterialPageRoute(builder: (context) => HomeScreen()),
         );
       });
     } else {
+      setState(() {
+        nologin = "User or Password is Incorrect";
+      });
+
       return null;/*Future.delayed(loginTime).then((_) {
         if (!users.containsKey(data.name)) {
           return 'Invalid email';
@@ -234,6 +239,16 @@ class _LoginViewState extends State<LoginView> {
             key: _formKey,
             child: Column(
               children: [
+                //no user label
+                Text(
+                  nologin,
+                  style: TextStyle(color: Colors.red),
+                  textAlign: TextAlign.center,
+
+                ),
+                SizedBox(
+                  height: size.height * 0.03,
+                ),
                 /// username or Gmail
                 TextFormField(
                   style: kTextFormFieldStyle(),
@@ -247,12 +262,11 @@ class _LoginViewState extends State<LoginView> {
                   controller: nameController,
                   // The validator receives the text that the user has entered.
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter username';
-                    } else if (value.length < 4) {
-                      return 'at least enter 4 characters';
-                    }
-                    return null;
+                    final bool isValid = EmailValidator.validate(value!);
+                    if( isValid == true)
+                    {return null; }
+                    else
+                      return 'please enter valid gmail';
                   },
                 ),
                 // SizedBox(
@@ -420,17 +434,22 @@ class _LoginViewState extends State<LoginView> {
           // Validate returns true if the form is valid, or false otherwise.
 
           print('button pressed');
+          setState(() {
+            nologin ="";
+          });
+          if (_formKey.currentState!.validate()) {
+
 
          // if( await getToken(emailController.text, passwordController.text)) {
             //print('authetication completed');
-            _authUser;
+            _authUser(nameController,passwordController);
             //Navigator.push(
               //context,
               //MaterialPageRoute(builder: (context) => HomeScreen()),
             //);
          // }
           //_authUser();
-          if (_formKey.currentState!.validate()) {
+
             // ... Navigate To your Home Page
           }
         },
