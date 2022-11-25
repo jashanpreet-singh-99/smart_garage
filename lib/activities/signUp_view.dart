@@ -44,10 +44,10 @@ class _SignUpViewState extends State<SignUpView> {
     };
 
     Map bData = {
-      'email': email,
-      'password': password,
-      'first': first,
-      'last': last
+      'email': email.text,
+      'password': password.text,
+      'first': first.text,
+      'last': last.text
     };
     final body = json.encode(bData);
 

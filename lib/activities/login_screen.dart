@@ -40,7 +40,7 @@ class _LoginViewState extends State<LoginView> {
     final uri = Config.urlLogin;
     final headers = {'Content-Type': 'application/json'};
 
-    Map bData = {'email': email, 'password': password};
+    Map bData = {'email': email, 'password': password, 'Device': ""};
     final body = json.encode(bData);
 
     http.Response response = await http.post(uri, headers: headers, body: body);
@@ -418,14 +418,17 @@ class _LoginViewState extends State<LoginView> {
         ),
         onPressed: () async {
           // Validate returns true if the form is valid, or false otherwise.
+
           print('button pressed');
-          if( await getToken(emailController.text, passwordController.text)) {
-            print('authetication completed');
+
+         // if( await getToken(emailController.text, passwordController.text)) {
+            //print('authetication completed');
+            _authUser;
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => DashPage()),
+              MaterialPageRoute(builder: (context) => HomeScreen()),
             );
-          }
+         // }
           //_authUser();
           if (_formKey.currentState!.validate()) {
             // ... Navigate To your Home Page
