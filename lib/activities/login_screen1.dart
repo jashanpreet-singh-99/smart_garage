@@ -113,17 +113,17 @@ class _LoginScreenAState extends State<LoginScreenA> {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
             splashColor: Colors.cyan,
-            color: Colors.cyan,
+            color: Colors.white,
             padding: const EdgeInsets.symmetric(
               vertical: 12,
             ),
             child: const Padding(
               padding: EdgeInsets.fromLTRB(30, 8, 30, 8),
               child: Text(
-                'Sign Up',
+                'SIGN UP',
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
+                  color: Colors.cyan,
+                  fontSize: 14,
                 ),
               ),
             ),
