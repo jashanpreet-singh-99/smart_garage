@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:smart_garage/activities/splash_screen.dart';

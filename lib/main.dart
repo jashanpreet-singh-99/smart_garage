@@ -8,13 +8,14 @@ import 'package:smart_garage/utils/config.dart';
 
 import 'dart:io' show Platform;
 
-import 'package:smart_garage/utils/preference_manager.dart';
+import 'package:smart_garage/globals.dart' as globals;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (Platform.isAndroid) {
     await Firebase.initializeApp();
   }
+  globals.appNavigator = GlobalKey<NavigatorState>();
   runApp(const MyApp());
 }
 
@@ -65,7 +66,8 @@ class _MyApp extends State<MyApp> {
         )
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Smart Garage',
+        navigatorKey: globals.appNavigator,
         theme: ThemeData(
           primarySwatch: Colors.cyan,
         ),

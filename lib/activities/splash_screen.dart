@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:smart_garage/activities/guest_screen.dart';
 import 'package:smart_garage/activities/home_screen.dart';
 import 'package:smart_garage/activities/login_screen1.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:smart_garage/activities/user_input_screen.dart';
 
 import '../utils/config.dart';
 
 import 'package:http/http.dart' as http;
+import 'dart:io' show Platform;
+import 'package:smart_garage/globals.dart' as globals;
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({
@@ -21,6 +25,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  bool notificationOnly = false;
+
   @override
   void initState() {
     super.initState();
@@ -45,17 +51,29 @@ class _SplashScreenState extends State<SplashScreen> {
       Log.log(Log.TAG_SPLASH, "Token Check :  $isValidToken", Log.I);
 
       if (isValidToken == true) {
+        if (Platform.isAndroid) {
+          OneSignal.shared.setNotificationOpenedHandler((openedResult) {
+            var data = openedResult.notification.additionalData;
+            Log.log(Log.TAG_OPEN_SIGNAL, "Notification : $data", Log.I);
+            notificationOnly = true;
+            globals.appNavigator.currentState?.push(MaterialPageRoute(
+                builder: (context) => UserInputScreen(postData: data)));
+            return;
+          });
+        }
         Timer(const Duration(milliseconds: 1000), () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) {
-              if (role == Config.ROLE_ADMIN) {
-                return const HomeScreen();
-              } else {
-                return const GuestScreen();
-              }
-            }),
-          );
+          if (!notificationOnly) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) {
+                if (role == Config.ROLE_ADMIN) {
+                  return const HomeScreen();
+                } else {
+                  return const GuestScreen();
+                }
+              }),
+            );
+          }
         });
       } else {
         Timer(const Duration(milliseconds: 1000), () {
