@@ -15,6 +15,7 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
   Widget buildTextField(String hint, TextEditingController controller) {
     return Container(
       margin: const EdgeInsets.all(10),
+      height: 45,
       child: TextField(
         decoration: InputDecoration(
           labelText: hint,

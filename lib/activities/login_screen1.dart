@@ -67,20 +67,12 @@ class _LoginScreenAState extends State<LoginScreenA> {
     }
   }
 
-  Future<String?> _signUpUser(SignupData data) {
-    debugPrint('Signup Name: ${data.name}, Password: ${data.password}');
-    return Future.delayed(loginTime).then((_) {
-      return null;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return FlutterLogin(
       title: 'Smart Garage',
       logo: const AssetImage('assets/garage.png'),
       onLogin: _authUser,
-      //onSignup: _signUpUser,
       onSubmitAnimationCompleted: () {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) {
@@ -109,35 +101,34 @@ class _LoginScreenAState extends State<LoginScreenA> {
             'This feature is not available for you. Please contact the Application service provider.',
       ),
       children: [
-    Padding(
-    padding: const EdgeInsets.fromLTRB(0, 275, 0, 0),
-       child: MaterialButton(
-          onPressed: (){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SignUpView1()),
-            );
-          },
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(50)),
-
-          minWidth: 250,
-          splashColor: Colors.lightBlue,
-          color: Colors.lightBlue,
-          padding: const EdgeInsets.symmetric(
-            vertical: 12,
-          ),
-
-          child: const Text(
-            'Sign Up',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 15,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 275, 0, 0),
+          child: MaterialButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SignUpView1()),
+              );
+            },
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            splashColor: Colors.cyan,
+            color: Colors.cyan,
+            padding: const EdgeInsets.symmetric(
+              vertical: 12,
+            ),
+            child: const Padding(
+              padding: EdgeInsets.fromLTRB(30, 8, 30, 8),
+              child: Text(
+                'Sign Up',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                ),
+              ),
             ),
           ),
         ),
-    ),
-
         Padding(
             padding: const EdgeInsets.fromLTRB(0, 400, 0, 0),
             child: Card(
@@ -150,7 +141,7 @@ class _LoginScreenAState extends State<LoginScreenA> {
                   cornerRadius: 15.0,
                   radiusStyle: true,
                   activeBgColor: const [Colors.white],
-                  activeFgColor: Colors.lightBlue,
+                  activeFgColor: Colors.cyan,
                   inactiveBgColor: Colors.grey,
                   inactiveFgColor: Colors.black38,
                   labels: const ['Family', 'Guest'],

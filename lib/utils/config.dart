@@ -219,6 +219,7 @@ class Log {
   static const String TAG_DIALOG = "Dialog_messages       ";
   static const String TAG_DATE = "Date_messages         ";
   static const String TAG_DROPDOWN = "DropDown_messages     ";
+  static const String TAG_VEHICLE = "vehicle_messages      ";
 
   static void log(String tag, String message, String type) {
     if (DEBUG) {

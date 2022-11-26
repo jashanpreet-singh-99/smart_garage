@@ -3,6 +3,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:smart_garage/activities/splash_screen.dart';
 import 'package:smart_garage/dialogs/profile_edit_dialog.dart';
 
@@ -412,6 +413,60 @@ class _UserPageState extends State<UserPage> {
     }
   }
 
+  IconData getTierIcon(String type) {
+    switch (type) {
+      case "Winter":
+        return Icons.snowing;
+      case "Summer":
+        return Icons.sunny;
+      default:
+        return Icons.sunny_snowing;
+    }
+  }
+
+  Color getPercentColor(double percent) {
+    return Color.lerp(Colors.red, Colors.green, percent) ?? Colors.greenAccent;
+  }
+
+  double getBrakeOilHealth(dynamic val) {
+    int mils = val['Milage'] - val['AirFilter'];
+    Log.log(Log.TAG_VEHICLE, "AirFilter : $mils", Log.I);
+    if (mils > 0 && mils < 40000) {
+      return 1 - (mils / 40000);
+    }
+    return 0;
+  }
+
+  double getAirFilterHealth(dynamic val) {
+    int mils = val['Milage'] - val['BrakeOil'];
+    Log.log(Log.TAG_VEHICLE, "Brake oil: $mils", Log.I);
+    if (mils > 0 && mils < 15000) {
+      return 1 - (mils / 15000);
+    }
+    return 0;
+  }
+
+  int getEngineOilLimit(String type) {
+    switch (type) {
+      case "TYPE A":
+        return 65000;
+      case "TYPE B":
+        return 11000;
+      default:
+        return 16000;
+    }
+  }
+
+  double getEngineOilHealth(dynamic val) {
+    int limit = getEngineOilLimit(val['OilType']);
+    int mils = val['Milage'] - val['LSMilage'];
+    Log.log(Log.TAG_VEHICLE, "Engine oil: $mils", Log.I);
+    if (mils > 0 && mils < limit) {
+      return 1 - (mils / limit);
+    }
+    return 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -568,57 +623,377 @@ class _UserPageState extends State<UserPage> {
                                     child: ExpandablePanel(
                                       header: Padding(
                                         padding: const EdgeInsets.all(16),
-                                        child: Text(
-                                          "Vehicle: ${vehicleList[index]['CarID']}",
-                                          style: const TextStyle(
-                                              fontSize: 18,
+                                        child: Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.car_repair,
                                               color: Colors.black87,
-                                              fontWeight: FontWeight.w500),
+                                            ),
+                                            const Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    10, 0, 0, 10)),
+                                            Text(
+                                              "Vehicle: ${vehicleList[index]['CarID']}",
+                                              style: const TextStyle(
+                                                  fontSize: 18,
+                                                  color: Colors.black87,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                       collapsed: Container(),
-                                      expanded: ListTile(
-                                        title:
-                                            Text(vehicleList[index]['CarID']),
-                                        subtitle: Text(vehicleList[index]
-                                                ["Milage"]
-                                            .toString()),
-                                        trailing: SizedBox(
-                                          height: 50,
-                                          width: 50,
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              removeVehicle(
-                                                  vehicleList[index]['CarID'],
-                                                  index);
-                                            },
-                                            style: ButtonStyle(
-                                              shadowColor: MaterialStateProperty
-                                                  .all<Color>(
-                                                      Colors.transparent),
-                                              backgroundColor:
-                                                  MaterialStateProperty.all<
-                                                      Color>(Colors.red),
-                                              shape: MaterialStateProperty.all<
-                                                  RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          30.0),
+                                      expanded: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: const [
+                                              Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    10, 5, 10, 10),
+                                                child: Text(
+                                                  "Expected Service",
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            child: const FittedBox(
-                                              fit: BoxFit.fill,
-                                              clipBehavior: Clip.antiAlias,
-                                              child: Icon(
-                                                Icons.delete,
-                                                size: 40,
-                                                color: Colors.white,
+                                              Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    10, 5, 10, 5),
+                                                child: Text(
+                                                  "22-12-2022",
+                                                  style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+                                            ],
                                           ),
-                                        ),
+                                          Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    10, 5, 10, 10),
+                                                child: Text(
+                                                  "Last recorded Milage",
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        10, 5, 10, 5),
+                                                child: Text(
+                                                  "${vehicleList[index]['Milage']} km",
+                                                  style: const TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                flex: 8,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Padding(
+                                                      padding:
+                                                          EdgeInsets.fromLTRB(
+                                                              10, 5, 10, 5),
+                                                      child: Text(
+                                                        "Engine Oil",
+                                                        style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                              .fromLTRB(
+                                                          0, 5, 0, 10),
+                                                      child:
+                                                          LinearPercentIndicator(
+                                                        animation: true,
+                                                        lineHeight: 20,
+                                                        animationDuration: 2000,
+                                                        percent:
+                                                            getEngineOilHealth(
+                                                                vehicleList[
+                                                                    index]),
+                                                        center: Text(
+                                                          "${(getEngineOilHealth(vehicleList[index]) * 100).toInt()}%",
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                        barRadius: const Radius
+                                                            .circular(16),
+                                                        progressColor:
+                                                            getPercentColor(
+                                                                getEngineOilHealth(
+                                                                    vehicleList[
+                                                                        index])),
+                                                      ),
+                                                    ),
+                                                    const Padding(
+                                                      padding:
+                                                          EdgeInsets.fromLTRB(
+                                                              10, 5, 10, 5),
+                                                      child: Text(
+                                                        "Brake Oil",
+                                                        style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                              .fromLTRB(
+                                                          0, 5, 0, 10),
+                                                      child:
+                                                          LinearPercentIndicator(
+                                                        animation: true,
+                                                        lineHeight: 20,
+                                                        animationDuration: 2000,
+                                                        percent:
+                                                            getBrakeOilHealth(
+                                                                vehicleList[
+                                                                    index]),
+                                                        center: Text(
+                                                          "${(getBrakeOilHealth(vehicleList[index]) * 100).toInt()}%",
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                        barRadius: const Radius
+                                                            .circular(16),
+                                                        progressColor:
+                                                            getPercentColor(
+                                                          getBrakeOilHealth(
+                                                              vehicleList[
+                                                                  index]),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const Padding(
+                                                      padding:
+                                                          EdgeInsets.fromLTRB(
+                                                              10, 5, 10, 5),
+                                                      child: Text(
+                                                        "Air Filter",
+                                                        style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                              .fromLTRB(
+                                                          0, 5, 0, 10),
+                                                      child:
+                                                          LinearPercentIndicator(
+                                                        animation: true,
+                                                        lineHeight: 20,
+                                                        animationDuration: 2000,
+                                                        percent:
+                                                            getAirFilterHealth(
+                                                                vehicleList[
+                                                                    index]),
+                                                        center: Text(
+                                                          "${(getAirFilterHealth(vehicleList[index]) * 100).toInt()}%",
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                        barRadius: const Radius
+                                                            .circular(16),
+                                                        progressColor:
+                                                            getPercentColor(
+                                                                getAirFilterHealth(
+                                                                    vehicleList[
+                                                                        index])),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Expanded(
+                                                flex: 3,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 50,
+                                                      width: 50,
+                                                      child: ElevatedButton(
+                                                        onPressed: () {
+                                                          removeVehicle(
+                                                              vehicleList[index]
+                                                                  ['CarID'],
+                                                              index);
+                                                        },
+                                                        style: ButtonStyle(
+                                                          shadowColor:
+                                                              MaterialStateProperty
+                                                                  .all<Color>(Colors
+                                                                      .transparent),
+                                                          backgroundColor:
+                                                              MaterialStateProperty
+                                                                  .all<Color>(
+                                                                      Colors
+                                                                          .red),
+                                                          shape: MaterialStateProperty
+                                                              .all<
+                                                                  RoundedRectangleBorder>(
+                                                            RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          30.0),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        child: const FittedBox(
+                                                          fit: BoxFit.fill,
+                                                          clipBehavior:
+                                                              Clip.antiAlias,
+                                                          child: Icon(
+                                                            Icons.delete,
+                                                            size: 40,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const Padding(
+                                                        padding:
+                                                            EdgeInsets.all(10)),
+                                                    SizedBox(
+                                                      height: 50,
+                                                      width: 50,
+                                                      child: ElevatedButton(
+                                                        onPressed: () {
+                                                          //
+                                                        },
+                                                        style: ButtonStyle(
+                                                          shadowColor:
+                                                              MaterialStateProperty
+                                                                  .all<Color>(Colors
+                                                                      .transparent),
+                                                          backgroundColor:
+                                                              MaterialStateProperty
+                                                                  .all<Color>(Colors
+                                                                      .greenAccent),
+                                                          shape: MaterialStateProperty
+                                                              .all<
+                                                                  RoundedRectangleBorder>(
+                                                            RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          30.0),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        child: const FittedBox(
+                                                          fit: BoxFit.fill,
+                                                          clipBehavior:
+                                                              Clip.antiAlias,
+                                                          child: Icon(
+                                                            Icons.update,
+                                                            size: 40,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    10, 5, 10, 12),
+                                                child: Text(
+                                                  "Current Tiers : ",
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        10, 5, 10, 12),
+                                                child: Text(
+                                                  vehicleList[index]['Tiers'],
+                                                  style: const TextStyle(
+                                                    color: Colors.black54,
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          10, 5, 30, 12),
+                                                  child: Icon(
+                                                    getTierIcon(
+                                                        vehicleList[index]
+                                                            ['Tiers']),
+                                                    color: Colors.black54,
+                                                  )),
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   );
@@ -722,12 +1097,23 @@ class _UserPageState extends State<UserPage> {
                                     child: ExpandablePanel(
                                       header: Padding(
                                         padding: const EdgeInsets.all(16),
-                                        child: Text(
-                                          "Guest $index",
-                                          style: const TextStyle(
-                                              fontSize: 18,
+                                        child: Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.people,
                                               color: Colors.black87,
-                                              fontWeight: FontWeight.w500),
+                                            ),
+                                            const Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    10, 0, 0, 10)),
+                                            Text(
+                                              "Guest $index",
+                                              style: const TextStyle(
+                                                  fontSize: 18,
+                                                  color: Colors.black87,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                       collapsed: Container(),

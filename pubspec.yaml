@@ -52,6 +52,7 @@ dependencies:
   get:
   intl: ^0.17.0
   expandable: ^5.0.1
+  percent_indicator: ^4.2.2
 
 
 dev_dependencies:
