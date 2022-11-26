@@ -20,6 +20,8 @@ class Config {
   Uri urlRevokeGuest =
       Uri.parse("http://4.229.225.201:5000/revoke_guest?token=$token");
   Uri urlVehicles = Uri.parse("http://4.229.225.201:5000/vehicle?token=$token");
+  Uri urlAddVehicles =
+      Uri.parse("http://4.229.225.201:5000/add_vehicle?token=$token");
   Uri urlRemoveVehicle =
       Uri.parse("http://4.229.225.201:5000/remove_vehicle?token=$token");
   Uri urlSignUp = Uri.parse("http://4.229.225.201:5000/sign_up");
@@ -215,9 +217,12 @@ class Log {
   static const String TAG_STORAGE = "Storage_logs          ";
   static const String TAG_OPEN_SIGNAL = "One_Signal_logs       ";
   static const String TAG_DIALOG = "Dialog_messages       ";
+  static const String TAG_DATE = "Date_messages         ";
+  static const String TAG_DROPDOWN = "DropDown_messages     ";
 
   static void log(String tag, String message, String type) {
     if (DEBUG) {
+      // ignore: avoid_print
       print("$tag : $type : $message");
     }
   }

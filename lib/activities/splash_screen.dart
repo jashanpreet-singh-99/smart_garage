@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:smart_garage/activities/guest_screen.dart';
 import 'package:smart_garage/activities/home_screen.dart';
 import 'package:smart_garage/activities/login_screen1.dart';
-import 'package:smart_garage/activities/login_screen.dart';
-import 'package:smart_garage/activities/signUp_view.dart';
 
 import '../utils/config.dart';
 

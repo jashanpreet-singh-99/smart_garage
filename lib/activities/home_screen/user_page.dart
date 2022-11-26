@@ -1,9 +1,13 @@
 import 'dart:convert';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:smart_garage/activities/splash_screen.dart';
 import 'package:smart_garage/dialogs/profile_edit_dialog.dart';
 
+import '../../dialogs/vehicle_details_dialog.dart';
+import '../../model/vehicle.dart';
 import '../../utils/config.dart';
 
 class UserPage extends StatefulWidget {
@@ -77,12 +81,78 @@ class _UserPageState extends State<UserPage> {
         context: context,
         builder: (_) {
           return AlertDialog(
+            clipBehavior: Clip.antiAliasWithSaveLayer,
             content: ProfileEditDialog(updateProfileData),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
             ),
           );
         });
+  }
+
+  void showAddVehicleDialog() {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            insetPadding: const EdgeInsets.all(1),
+            contentPadding: const EdgeInsets.all(1),
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            content: VehicleInfoDialog(updateVehicleData),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+          );
+        });
+  }
+
+  Future<void> updateVehicleData(Vehicle v) async {
+    Log.log(Log.TAG_DIALOG, "Vehicle data : ${v.carID} ${v.lSDate}", Log.I);
+    final uri = Config().urlAddVehicles;
+    final headers = {'Content-Type': 'application/json'};
+
+    String email = await Config.readFromStorage(Config.KEY_USER, "");
+    Map bData = {
+      'email': email,
+      'CarID': v.carID,
+      'Milage': v.milage,
+      'LSDate': v.lSDate,
+      'LSMilage': v.lSMilage,
+      'OilType': v.oilType,
+      'Tiers': v.tires,
+      'AirFilter': v.airFilter,
+      'BrakeOil': v.brakeOil
+    };
+    final body = json.encode(bData);
+
+    http.Response response = await http.post(
+      uri,
+      headers: headers,
+      body: body,
+    );
+
+    int statusCode = response.statusCode;
+    String responseBody = response.body;
+    Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
+    Log.log(Log.TAG_REQUEST, responseBody, Log.I);
+    if (statusCode == 200) {
+      final stat = json.decode(responseBody)['status'];
+      Log.log(Log.TAG_REQUEST, "USER: ${getName()} $stat", Log.I);
+      setState(() {
+        if (stat == 1) {
+          vehicleList.add(bData);
+        } else {
+          openDialog("Vehicle Data Error",
+              "Error occurred while saving your data. Either the server is offline or the data entered is invalid.");
+        }
+      });
+    } else if (statusCode == 403) {
+      Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
+      if (await Config.refreshToken()) {
+        Log.log(Log.TAG_REQUEST, "Calling Again using new Token", Log.I);
+        updateProfileData(firstName, lastName);
+      }
+    }
   }
 
   Future<void> updateProfileData(String firstN, String lastN) async {
@@ -112,7 +182,8 @@ class _UserPageState extends State<UserPage> {
           firstName = firstN;
           lastName = lastN;
         } else {
-          // Show error dialog
+          openDialog("Profile Data Error",
+              "Error occurred while saving your data. Either the server is offline or the data entered is invalid.");
         }
       });
     } else if (statusCode == 403) {
@@ -124,17 +195,16 @@ class _UserPageState extends State<UserPage> {
     }
   }
 
-  Future openDialog() => showDialog(
+  Future openDialog(String titleTxt, String msgText) => showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Padding(
-            padding: EdgeInsets.fromLTRB(2, 2, 2, 0),
-            child: Text('Guest Limit Error'),
+          title: Padding(
+            padding: const EdgeInsets.fromLTRB(2, 2, 2, 0),
+            child: Text(titleTxt),
           ),
-          content: const Padding(
-            padding: EdgeInsets.fromLTRB(2, 0, 2, 0),
-            child: Text(
-                'Maximum Guests limit reached. Please delete previous Guests in order to generate new ones.'),
+          content: Padding(
+            padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
+            child: Text(msgText),
           ),
           actions: [
             Row(
@@ -462,13 +532,17 @@ class _UserPageState extends State<UserPage> {
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               children: const [
-                                Text(
-                                  'Vehicles',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.blueGrey,
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                                  child: Text(
+                                    'Vehicles',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.blueGrey,
+                                    ),
+                                    textAlign: TextAlign.start,
                                   ),
-                                  textAlign: TextAlign.start,
                                 ),
                               ],
                             ),
@@ -491,38 +565,59 @@ class _UserPageState extends State<UserPage> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
-                                    child: ListTile(
-                                      title: Text(vehicleList[index]['CarID']),
-                                      subtitle: Text(vehicleList[index]
-                                              ["Milage"]
-                                          .toString()),
-                                      trailing: SizedBox(
-                                        height: 40,
-                                        width: 40,
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            removeVehicle(
-                                                vehicleList[index]['CarID'],
-                                                index);
-                                          },
-                                          style: ButtonStyle(
-                                            shadowColor: MaterialStateProperty
-                                                .all<Color>(Colors.transparent),
-                                            backgroundColor:
-                                                MaterialStateProperty.all<
-                                                    Color>(Colors.red),
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(30.0),
+                                    child: ExpandablePanel(
+                                      header: Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: Text(
+                                          "Vehicle: ${vehicleList[index]['CarID']}",
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.black87,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ),
+                                      collapsed: Container(),
+                                      expanded: ListTile(
+                                        title:
+                                            Text(vehicleList[index]['CarID']),
+                                        subtitle: Text(vehicleList[index]
+                                                ["Milage"]
+                                            .toString()),
+                                        trailing: SizedBox(
+                                          height: 50,
+                                          width: 50,
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              removeVehicle(
+                                                  vehicleList[index]['CarID'],
+                                                  index);
+                                            },
+                                            style: ButtonStyle(
+                                              shadowColor: MaterialStateProperty
+                                                  .all<Color>(
+                                                      Colors.transparent),
+                                              backgroundColor:
+                                                  MaterialStateProperty.all<
+                                                      Color>(Colors.red),
+                                              shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          30.0),
+                                                ),
+                                              ),
+                                            ),
+                                            child: const FittedBox(
+                                              fit: BoxFit.fill,
+                                              clipBehavior: Clip.antiAlias,
+                                              child: Icon(
+                                                Icons.delete,
+                                                size: 40,
+                                                color: Colors.white,
                                               ),
                                             ),
                                           ),
-                                          child: const Text("X",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 16)),
                                         ),
                                       ),
                                     ),
@@ -531,11 +626,11 @@ class _UserPageState extends State<UserPage> {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              if (guestList.length < 3) {
-                                // addGuest();
+                              if (vehicleList.length < 3) {
+                                showAddVehicleDialog();
                               } else {
-                                // openDialog();
-                                // Show a dialog that u cannot add more guest
+                                openDialog("Vehicle Limit",
+                                    "You have reached maximum car limit per user. Please contact the application service provider to increase the limit.");
                               }
                             },
                             style: ButtonStyle(
@@ -591,13 +686,17 @@ class _UserPageState extends State<UserPage> {
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               children: const [
-                                Text(
-                                  'Guest Access',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.blueGrey,
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                                  child: Text(
+                                    'Guest Access',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.blueGrey,
+                                    ),
+                                    textAlign: TextAlign.start,
                                   ),
-                                  textAlign: TextAlign.start,
                                 ),
                               ],
                             ),
@@ -620,38 +719,105 @@ class _UserPageState extends State<UserPage> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
-                                    child: ListTile(
-                                      title: Text(guestList[index]['email']),
-                                      subtitle:
-                                          Text(guestList[index]['password']),
-                                      trailing: SizedBox(
-                                        height: 40,
-                                        width: 40,
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            revokeGuest(
+                                    child: ExpandablePanel(
+                                      header: Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: Text(
+                                          "Guest $index",
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.black87,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ),
+                                      collapsed: Container(),
+                                      expanded: ListTile(
+                                        title: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              'Email address',
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      10, 10, 0, 10),
+                                              child: Text(
                                                 guestList[index]['email'],
+                                                style: const TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        subtitle: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              'Password',
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      10, 10, 0, 10),
+                                              child: Text(
                                                 guestList[index]['password'],
-                                                index);
-                                          },
-                                          style: ButtonStyle(
-                                            shadowColor: MaterialStateProperty
-                                                .all<Color>(Colors.transparent),
-                                            backgroundColor:
-                                                MaterialStateProperty.all<
-                                                    Color>(Colors.red),
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(30.0),
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.black87,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        trailing: SizedBox(
+                                          height: 50,
+                                          width: 50,
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              revokeGuest(
+                                                  guestList[index]['email'],
+                                                  guestList[index]['password'],
+                                                  index);
+                                            },
+                                            style: ButtonStyle(
+                                              shadowColor: MaterialStateProperty
+                                                  .all<Color>(
+                                                      Colors.transparent),
+                                              backgroundColor:
+                                                  MaterialStateProperty.all<
+                                                      Color>(Colors.red),
+                                              shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          30.0),
+                                                ),
+                                              ),
+                                            ),
+                                            child: const FittedBox(
+                                              fit: BoxFit.fill,
+                                              clipBehavior: Clip.antiAlias,
+                                              child: Icon(
+                                                Icons.delete,
+                                                size: 40,
+                                                color: Colors.white,
                                               ),
                                             ),
                                           ),
-                                          child: const Text("X",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 16)),
                                         ),
                                       ),
                                     ),
@@ -663,8 +829,8 @@ class _UserPageState extends State<UserPage> {
                               if (guestList.length < 3) {
                                 addGuest();
                               } else {
-                                openDialog();
-                                // Show a dialog that u cannot add more guest
+                                openDialog('Guest Limit Error',
+                                    'Maximum Guests limit reached. Please delete previous Guests in order to generate new ones.');
                               }
                             },
                             style: ButtonStyle(
