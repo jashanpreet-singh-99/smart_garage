@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter_login/flutter_login.dart';
+import 'package:smart_garage/activities/signUp_view1.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import '../utils/config.dart';
 import 'guest_screen.dart';
@@ -79,7 +80,7 @@ class _LoginScreenAState extends State<LoginScreenA> {
       title: 'Smart Garage',
       logo: const AssetImage('assets/garage.png'),
       onLogin: _authUser,
-      onSignup: _signUpUser,
+      //onSignup: _signUpUser,
       onSubmitAnimationCompleted: () {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) {
@@ -108,6 +109,35 @@ class _LoginScreenAState extends State<LoginScreenA> {
             'This feature is not available for you. Please contact the Application service provider.',
       ),
       children: [
+    Padding(
+    padding: const EdgeInsets.fromLTRB(0, 275, 0, 0),
+       child: MaterialButton(
+          onPressed: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SignUpView1()),
+            );
+          },
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50)),
+
+          minWidth: 250,
+          splashColor: Colors.lightBlue,
+          color: Colors.lightBlue,
+          padding: const EdgeInsets.symmetric(
+            vertical: 12,
+          ),
+
+          child: const Text(
+            'Sign Up',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+            ),
+          ),
+        ),
+    ),
+
         Padding(
             padding: const EdgeInsets.fromLTRB(0, 400, 0, 0),
             child: Card(
