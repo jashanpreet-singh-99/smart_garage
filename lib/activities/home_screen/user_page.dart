@@ -26,7 +26,7 @@ class _UserPageState extends State<UserPage> {
   List<dynamic> guestList = List.empty();
   List<dynamic> vehicleList = List.empty();
 
-  String firstName = "jashan";
+  String firstName = "Jashan";
   String lastName = "Singh";
   String emailAddress = "Email Address";
 
@@ -447,6 +447,8 @@ class _UserPageState extends State<UserPage> {
     Log.log(Log.TAG_VEHICLE, "AirFilter : $mils", Log.I);
     if (mils > 0 && mils < 15000) {
       return 1 - (mils / 15000);
+    } else if (val['Milage'] == val['AirFilter']) {
+      return 1;
     }
     return 0;
   }
@@ -456,6 +458,8 @@ class _UserPageState extends State<UserPage> {
     Log.log(Log.TAG_VEHICLE, "Brake oil: $mils", Log.I);
     if (mils > 0 && mils < 40000) {
       return 1 - (mils / 40000);
+    } else if (val['Milage'] == val['BrakeOil']) {
+      return 1;
     }
     return 0;
   }
@@ -477,6 +481,8 @@ class _UserPageState extends State<UserPage> {
     Log.log(Log.TAG_VEHICLE, "Engine oil: $mils", Log.I);
     if (mils > 0 && mils < limit) {
       return 1 - (mils / limit);
+    } else if (val['Milage'] == val['LSMilage']) {
+      return 1;
     }
     return 0;
   }

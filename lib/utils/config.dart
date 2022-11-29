@@ -26,6 +26,18 @@ class Config {
       Uri.parse("http://4.229.225.201:5000/remove_vehicle?token=$token");
   Uri urlSignUp = Uri.parse("http://4.229.225.201:5000/sign_up");
 
+  Uri urlUpdateTiers =
+      Uri.parse("http://4.229.225.201:5000/update_tiers?token=$token");
+
+  Uri urlUpdateEngine =
+      Uri.parse("http://4.229.225.201:5000/update_engine?token=$token");
+  Uri urlUpdateBrake =
+      Uri.parse("http://4.229.225.201:5000/update_brake?token=$token");
+  Uri urlUpdateAir =
+      Uri.parse("http://4.229.225.201:5000/update_air?token=$token");
+  Uri urlUpdateMilage =
+      Uri.parse("http://4.229.225.201:5000/update_milage?token=$token");
+
   static const String API_KEY = "b22e4e51-0fdf-4c75-9d95-f023e9c32c74";
 
   static const String ROLE_ADMIN = "Admin";

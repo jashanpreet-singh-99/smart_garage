@@ -1,6 +1,9 @@
+import 'dart:convert';
+import 'dart:ffi';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_garage/activities/splash_screen.dart';
+import 'package:http/http.dart' as http;
 
 import '../utils/config.dart';
 
@@ -24,11 +27,278 @@ class _UserInputScreenState extends State<UserInputScreen> {
   String selectedOilType = "";
   String selectedTires = "";
 
-  Widget buildTextField(String hint, TextEditingController controller) {
+  Future openDialog(String titleTxt, String msgText) => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Padding(
+            padding: const EdgeInsets.fromLTRB(2, 2, 2, 0),
+            child: Text(titleTxt),
+          ),
+          content: Padding(
+            padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
+            child: Text(msgText),
+          ),
+          actions: [
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(2, 0, 2, 10),
+                  child: ElevatedButton(
+                    onPressed: (Navigator.of(context).pop),
+                    style: ButtonStyle(
+                      shadowColor:
+                          MaterialStateProperty.all<Color>(Colors.transparent),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.cyan),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                      ),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text("Okay",
+                          style: TextStyle(color: Colors.white, fontSize: 16)),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      );
+
+  Future<void> updateVehicleTiers(String tiers) async {
+    final uri = Config().urlUpdateTiers;
+    final headers = {'Content-Type': 'application/json'};
+
+    String email = await Config.readFromStorage(Config.KEY_USER, "");
+    Map bData = {
+      'email': email,
+      'CarID': notificationData,
+      'Tiers': tiers,
+    };
+    final body = json.encode(bData);
+
+    http.Response response = await http.post(
+      uri,
+      headers: headers,
+      body: body,
+    );
+
+    int statusCode = response.statusCode;
+    String responseBody = response.body;
+    Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
+    Log.log(Log.TAG_REQUEST, responseBody, Log.I);
+    if (statusCode == 200) {
+      final stat = json.decode(responseBody)['status'];
+      setState(() {
+        if (stat == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SplashScreen()),
+          );
+        } else {
+          openDialog("Vehicle Data Error",
+              "Error occurred while saving your data. Either the server is offline or the data entered is invalid.");
+        }
+      });
+    } else if (statusCode == 403) {
+      Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
+      if (await Config.refreshToken()) {
+        Log.log(Log.TAG_REQUEST, "Calling Again using new Token", Log.I);
+        updateVehicleTiers(tiers);
+      }
+    }
+  }
+
+  Future<void> updateVehicleEngine(int milage, String oilT) async {
+    final uri = Config().urlUpdateEngine;
+    final headers = {'Content-Type': 'application/json'};
+
+    String email = await Config.readFromStorage(Config.KEY_USER, "");
+    Map bData = {
+      'email': email,
+      'CarID': notificationData,
+      'LSMilage': milage,
+      'OilType': oilT,
+    };
+    final body = json.encode(bData);
+
+    http.Response response = await http.post(
+      uri,
+      headers: headers,
+      body: body,
+    );
+
+    int statusCode = response.statusCode;
+    String responseBody = response.body;
+    Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
+    Log.log(Log.TAG_REQUEST, responseBody, Log.I);
+    if (statusCode == 200) {
+      final stat = json.decode(responseBody)['status'];
+      setState(() {
+        if (stat == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SplashScreen()),
+          );
+        } else {
+          openDialog("Vehicle Data Error",
+              "Error occurred while saving your data. Either the server is offline or the data entered is invalid.");
+        }
+      });
+    } else if (statusCode == 403) {
+      Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
+      if (await Config.refreshToken()) {
+        Log.log(Log.TAG_REQUEST, "Calling Again using new Token", Log.I);
+        updateVehicleEngine(milage, oilT);
+      }
+    }
+  }
+
+  Future<void> updateVehicleBrake(int brakeO) async {
+    final uri = Config().urlUpdateBrake;
+    final headers = {'Content-Type': 'application/json'};
+
+    String email = await Config.readFromStorage(Config.KEY_USER, "");
+    Map bData = {
+      'email': email,
+      'CarID': notificationData,
+      'BrakeOil': brakeO,
+    };
+    final body = json.encode(bData);
+
+    http.Response response = await http.post(
+      uri,
+      headers: headers,
+      body: body,
+    );
+
+    int statusCode = response.statusCode;
+    String responseBody = response.body;
+    Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
+    Log.log(Log.TAG_REQUEST, responseBody, Log.I);
+    if (statusCode == 200) {
+      final stat = json.decode(responseBody)['status'];
+      setState(() {
+        if (stat == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SplashScreen()),
+          );
+        } else {
+          openDialog("Vehicle Data Error",
+              "Error occurred while saving your data. Either the server is offline or the data entered is invalid.");
+        }
+      });
+    } else if (statusCode == 403) {
+      Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
+      if (await Config.refreshToken()) {
+        Log.log(Log.TAG_REQUEST, "Calling Again using new Token", Log.I);
+        updateVehicleBrake(brakeO);
+      }
+    }
+  }
+
+  Future<void> updateVehicleAir(int airF) async {
+    final uri = Config().urlUpdateAir;
+    final headers = {'Content-Type': 'application/json'};
+
+    String email = await Config.readFromStorage(Config.KEY_USER, "");
+    Map bData = {
+      'email': email,
+      'CarID': notificationData,
+      'AirFilter': airF,
+    };
+    final body = json.encode(bData);
+
+    http.Response response = await http.post(
+      uri,
+      headers: headers,
+      body: body,
+    );
+
+    int statusCode = response.statusCode;
+    String responseBody = response.body;
+    Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
+    Log.log(Log.TAG_REQUEST, responseBody, Log.I);
+    if (statusCode == 200) {
+      final stat = json.decode(responseBody)['status'];
+      setState(() {
+        if (stat == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SplashScreen()),
+          );
+        } else {
+          openDialog("Vehicle Data Error",
+              "Error occurred while saving your data. Either the server is offline or the data entered is invalid.");
+        }
+      });
+    } else if (statusCode == 403) {
+      Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
+      if (await Config.refreshToken()) {
+        Log.log(Log.TAG_REQUEST, "Calling Again using new Token", Log.I);
+        updateVehicleAir(airF);
+      }
+    }
+  }
+
+  Future<void> updateVehicleOdo(int odo) async {
+    final uri = Config().urlUpdateMilage;
+    final headers = {'Content-Type': 'application/json'};
+
+    String email = await Config.readFromStorage(Config.KEY_USER, "");
+    Map bData = {
+      'email': email,
+      'CarID': notificationData,
+      'Milage': odo,
+    };
+    final body = json.encode(bData);
+
+    http.Response response = await http.post(
+      uri,
+      headers: headers,
+      body: body,
+    );
+
+    int statusCode = response.statusCode;
+    String responseBody = response.body;
+    Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
+    Log.log(Log.TAG_REQUEST, responseBody, Log.I);
+    if (statusCode == 200) {
+      final stat = json.decode(responseBody)['status'];
+      setState(() {
+        if (stat == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SplashScreen()),
+          );
+        } else {
+          openDialog("Vehicle Data Error",
+              "Error occurred while saving your data. Either the server is offline or the data entered is invalid.");
+        }
+      });
+    } else if (statusCode == 403) {
+      Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
+      if (await Config.refreshToken()) {
+        Log.log(Log.TAG_REQUEST, "Calling Again using new Token", Log.I);
+        updateVehicleOdo(odo);
+      }
+    }
+  }
+
+  Widget buildTextField(
+      String hint, TextEditingController controller, TextInputType type) {
     return Container(
-      margin: const EdgeInsets.all(10),
-      height: 45,
+      height: 40,
+      margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
       child: TextField(
+        keyboardType: type,
         decoration: InputDecoration(
           labelText: hint,
           focusedBorder: OutlineInputBorder(
@@ -60,7 +330,11 @@ class _UserInputScreenState extends State<UserInputScreen> {
   Widget build(BuildContext context) {
     notificationData = widget.postData['CarID'];
 
+    var odoController = TextEditingController();
     var engineOilController = TextEditingController();
+    var brakeOilController = TextEditingController();
+    var airFilterController = TextEditingController();
+
     return Scaffold(
       body: SingleChildScrollView(
         child: SizedBox(
@@ -124,6 +398,72 @@ class _UserInputScreenState extends State<UserInputScreen> {
                             ),
                             Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 10)),
                             Text(
+                              "Update Milage Reading?",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                      ),
+                      collapsed: Container(),
+                      expanded: Column(
+                        children: [
+                          buildTextField("Enter Current Milage", odoController,
+                              TextInputType.number),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                int mil = int.parse(odoController.text);
+                                updateVehicleOdo(mil);
+                              },
+                              style: ButtonStyle(
+                                shadowColor: MaterialStateProperty.all<Color>(
+                                    Colors.transparent),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.transparent),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  side: const BorderSide(color: Colors.cyan),
+                                )),
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.all(10.0),
+                                child: Text("UPDATE",
+                                    style: TextStyle(color: Colors.cyan)),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  margin: const EdgeInsets.all(10),
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  shadowColor: Colors.black,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    child: ExpandablePanel(
+                      header: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                        child: Row(
+                          children: const [
+                            Icon(
+                              Icons.engineering,
+                              color: Colors.black87,
+                            ),
+                            Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 10)),
+                            Text(
                               "Changed Engine Oil?",
                               style: TextStyle(
                                   fontSize: 18,
@@ -136,8 +476,8 @@ class _UserInputScreenState extends State<UserInputScreen> {
                       collapsed: Container(),
                       expanded: Column(
                         children: [
-                          buildTextField(
-                              "Enter Current Milage", engineOilController),
+                          buildTextField("Enter Current Milage",
+                              engineOilController, TextInputType.number),
                           Container(
                             height: 40,
                             margin: const EdgeInsets.fromLTRB(10, 10, 0, 10),
@@ -176,7 +516,10 @@ class _UserInputScreenState extends State<UserInputScreen> {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                int mil = int.parse(engineOilController.text);
+                                updateVehicleEngine(mil, selectedOilType);
+                              },
                               style: ButtonStyle(
                                 shadowColor: MaterialStateProperty.all<Color>(
                                     Colors.transparent),
@@ -235,11 +578,14 @@ class _UserInputScreenState extends State<UserInputScreen> {
                       expanded: Column(
                         children: [
                           buildTextField("Enter Brake Oil Change Milage",
-                              engineOilController),
+                              brakeOilController, TextInputType.number),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                int mil = int.parse(brakeOilController.text);
+                                updateVehicleBrake(mil);
+                              },
                               style: ButtonStyle(
                                 shadowColor: MaterialStateProperty.all<Color>(
                                     Colors.transparent),
@@ -298,11 +644,14 @@ class _UserInputScreenState extends State<UserInputScreen> {
                       expanded: Column(
                         children: [
                           buildTextField("Enter Air-Filter Change Milage",
-                              engineOilController),
+                              airFilterController, TextInputType.number),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                int mil = int.parse(airFilterController.text);
+                                updateVehicleAir(mil);
+                              },
                               style: ButtonStyle(
                                 shadowColor: MaterialStateProperty.all<Color>(
                                     Colors.transparent),
@@ -398,7 +747,9 @@ class _UserInputScreenState extends State<UserInputScreen> {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                updateVehicleTiers(selectedTires);
+                              },
                               style: ButtonStyle(
                                 shadowColor: MaterialStateProperty.all<Color>(
                                     Colors.transparent),
