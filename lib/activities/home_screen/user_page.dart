@@ -29,12 +29,20 @@ class _UserPageState extends State<UserPage> {
   String lastName = "Singh";
   String emailAddress = "Email Address";
 
+  bool disposed = false;
+
   @override
   void initState() {
     super.initState();
     getUserData();
     getGuestAccess();
     getVehicles();
+  }
+
+  @override
+  void dispose() {
+    disposed = true;
+    super.dispose();
   }
 
   String getName() {
@@ -60,13 +68,15 @@ class _UserPageState extends State<UserPage> {
     Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
     Log.log(Log.TAG_REQUEST, responseBody, Log.I);
     if (statusCode == 200) {
-      setState(() {
-        final body = json.decode(responseBody);
-        firstName = body['first_name'];
-        lastName = body['last_name'];
-        emailAddress = body['email'];
-        Log.log(Log.TAG_REQUEST, "USER: ${getName()}", Log.I);
-      });
+      if (!disposed) {
+        setState(() {
+          final body = json.decode(responseBody);
+          firstName = body['first_name'];
+          lastName = body['last_name'];
+          emailAddress = body['email'];
+          Log.log(Log.TAG_REQUEST, "USER: ${getName()}", Log.I);
+        });
+      }
     } else if (statusCode == 403) {
       Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
       if (await Config.refreshToken()) {
@@ -258,12 +268,14 @@ class _UserPageState extends State<UserPage> {
     Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
     Log.log(Log.TAG_REQUEST, responseBody, Log.I);
     if (statusCode == 200) {
-      setState(() {
-        guestList = Config().getList(responseBody);
-        for (var element in guestList) {
-          Log.log(Log.TAG_REQUEST, "GUEST: ${element['email']}", Log.I);
-        }
-      });
+      if (!disposed) {
+        setState(() {
+          guestList = Config().getList(responseBody);
+          for (var element in guestList) {
+            Log.log(Log.TAG_REQUEST, "GUEST: ${element['email']}", Log.I);
+          }
+        });
+      }
     } else if (statusCode == 403) {
       Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
       if (await Config.refreshToken()) {
@@ -292,12 +304,14 @@ class _UserPageState extends State<UserPage> {
     Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
     Log.log(Log.TAG_REQUEST, responseBody, Log.I);
     if (statusCode == 200) {
-      setState(() {
-        vehicleList = Config().getList(responseBody);
-        for (var element in guestList) {
-          Log.log(Log.TAG_REQUEST, "Vehicles: ${element['CarID']}", Log.I);
-        }
-      });
+      if (!disposed) {
+        setState(() {
+          vehicleList = Config().getList(responseBody);
+          for (var element in guestList) {
+            Log.log(Log.TAG_REQUEST, "Vehicles: ${element['CarID']}", Log.I);
+          }
+        });
+      }
     } else if (statusCode == 403) {
       Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
       if (await Config.refreshToken()) {

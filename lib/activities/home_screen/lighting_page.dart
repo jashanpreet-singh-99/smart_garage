@@ -24,6 +24,8 @@ class _LightingPageState extends State<LightingPage> {
 
   late List<int> lights = [];
 
+  bool disposed = false;
+
   void getLight() async {
     final uri = Config().urlLight;
     final headers = {'Content-Type': 'application/json'};
@@ -38,13 +40,19 @@ class _LightingPageState extends State<LightingPage> {
     Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
     Log.log(Log.TAG_REQUEST, responseBody, Log.I);
     if (statusCode == 200) {
-      setState(() {
-        lights = Config().getSwitchValueList(responseBody);
-        lightL = lights[0];
-        lightM = lights[1];
-        lightR = lights[2];
-        lightExt = lights[3];
-      });
+      try {
+        if (!disposed) {
+          setState(() {
+            lights = Config().getSwitchValueList(responseBody);
+            lightL = lights[0];
+            lightM = lights[1];
+            lightR = lights[2];
+            lightExt = lights[3];
+          });
+        }
+      } on Exception catch (e) {
+        Log.log(Log.TAG_REQUEST, "Error : $e", Log.E);
+      }
     } else if (statusCode == 403) {
       Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
       if (await Config.refreshToken()) {
@@ -52,6 +60,12 @@ class _LightingPageState extends State<LightingPage> {
         getLight();
       }
     }
+  }
+
+  @override
+  void dispose() {
+    disposed = true;
+    super.dispose();
   }
 
   void changeLight(String light, int varLight, int index) async {

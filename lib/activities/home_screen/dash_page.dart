@@ -27,6 +27,8 @@ class _DashPageState extends State<DashPage> {
   Color indoorLightColor = Colors.black26;
   Color extLightColor = Colors.black26;
 
+  bool disposed = false;
+
   void getDoorStatus() async {
     final uri = Config().urlDoor;
     final headers = {'Content-Type': 'application/json'};
@@ -41,10 +43,12 @@ class _DashPageState extends State<DashPage> {
     Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
     Log.log(Log.TAG_REQUEST, responseBody, Log.I);
     if (statusCode == 200) {
-      setState(() {
-        garageDoorStatus =
-            Config().getDoorString(Config().getDoorValue(responseBody));
-      });
+      if (!disposed) {
+        setState(() {
+          garageDoorStatus =
+              Config().getDoorString(Config().getDoorValue(responseBody));
+        });
+      }
     } else if (statusCode == 403) {
       Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
       if (await Config.refreshToken()) {
@@ -68,12 +72,15 @@ class _DashPageState extends State<DashPage> {
     Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
     Log.log(Log.TAG_REQUEST, responseBody, Log.I);
     if (statusCode == 200) {
-      setState(() {
-        drivewayLights = Config().getSwitchValueJson(responseBody, "Light_Ext");
-        extLightColor = Config().getLightSwitchColor(drivewayLights);
-        garageIndoorLights = Config().getSwitchValueIndoorJson(responseBody);
-        indoorLightColor = Config().getLightSwitchColor(garageIndoorLights);
-      });
+      if (!disposed) {
+        setState(() {
+          drivewayLights =
+              Config().getSwitchValueJson(responseBody, "Light_Ext");
+          extLightColor = Config().getLightSwitchColor(drivewayLights);
+          garageIndoorLights = Config().getSwitchValueIndoorJson(responseBody);
+          indoorLightColor = Config().getLightSwitchColor(garageIndoorLights);
+        });
+      }
     } else if (statusCode == 403) {
       Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
       if (await Config.refreshToken()) {
@@ -98,10 +105,12 @@ class _DashPageState extends State<DashPage> {
     Log.log(Log.TAG_REQUEST, responseBody, Log.I);
 
     if (statusCode == 200) {
-      setState(() {
-        coLevel = Config().getCoLevelJson(responseBody);
-        coColor = Config().getCoColor(coLevel);
-      });
+      if (!disposed) {
+        setState(() {
+          coLevel = Config().getCoLevelJson(responseBody);
+          coColor = Config().getCoColor(coLevel);
+        });
+      }
     } else if (statusCode == 403) {
       Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
       if (await Config.refreshToken()) {
@@ -117,6 +126,12 @@ class _DashPageState extends State<DashPage> {
     getDoorStatus();
     getLights();
     getCoValue();
+  }
+
+  @override
+  void dispose() {
+    disposed = true;
+    super.dispose();
   }
 
   @override

@@ -26,6 +26,8 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
 
   bool firstRun = true;
 
+  bool disposed = false;
+
   late AnimationController animationController;
 
   void getDoorStatus() async {
@@ -43,11 +45,17 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
     Log.log(Log.TAG_REQUEST, responseBody, Log.I);
     if (statusCode == 200) {
       int nStat = Config().getDoorValue(responseBody);
-      setState(() {
-        setBtnColors(nStat);
-        setDoorConnectionStatus("{\"status\":1}");
-      });
-      firstRun = false;
+      try {
+        if (!disposed) {
+          setState(() {
+            setBtnColors(nStat);
+            setDoorConnectionStatus("{\"status\":1}");
+          });
+          firstRun = false;
+        }
+      } on Exception catch (e) {
+        Log.log(Log.TAG_REQUEST, "Error : $e", Log.E);
+      }
     } else if (statusCode == 403) {
       Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
       if (await Config.refreshToken()) {
@@ -132,6 +140,7 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
   @override
   void dispose() {
     animationController.dispose();
+    disposed = true;
     super.dispose();
   }
 
