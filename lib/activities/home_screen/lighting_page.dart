@@ -126,29 +126,75 @@ class _LightingPageState extends State<LightingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-      child: Card(
-        elevation: 100,
-        shadowColor: Colors.black,
-        child: SizedBox(
-          width: 300,
-          height: 640,
-          child: Padding(
-            //padding: const EdgeInsets.all(10.0),
-            padding: const EdgeInsets.only(top: 60.0),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Image.asset(
-                    'assets/light_icon.png',
+      child: SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 250,
+                  child: Image.asset(
+                    'assets/garage_lights.png',
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+                  child: Container(
+                    height: 2,
+                    decoration: BoxDecoration(
+                        color: Colors.black87,
+                        border: Border.all(),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(2))),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  child: Text(
+                    "GARAGE LIGHTING CONTROLS",
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
+                  child: Container(
+                    height: 2,
+                    decoration: BoxDecoration(
+                        color: Colors.black87,
+                        border: Border.all(),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(2))),
+                  ),
+                ),
+                Card(
+                  margin: const EdgeInsets.fromLTRB(10, 5, 10, 10),
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("External Lights"),
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                          child: Text(
+                            "Driveway Light",
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54),
+                          ),
+                        ),
                         ToggleSwitch(
-                          minWidth: 50.0,
+                          minWidth: 60.0,
                           minHeight: 50.0,
                           initialLabelIndex: lightExt,
                           cornerRadius: 20.0,
@@ -180,14 +226,30 @@ class _LightingPageState extends State<LightingPage> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
+                ),
+                Card(
+                  margin: const EdgeInsets.fromLTRB(10, 5, 10, 10),
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("Left Lights"),
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                          child: Text(
+                            "L1 - Left Lights",
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54),
+                          ),
+                        ),
                         ToggleSwitch(
-                          minWidth: 50.0,
+                          minWidth: 60.0,
                           minHeight: 50.0,
                           initialLabelIndex: lightL,
                           cornerRadius: 20.0,
@@ -219,14 +281,30 @@ class _LightingPageState extends State<LightingPage> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
+                ),
+                Card(
+                  margin: const EdgeInsets.fromLTRB(10, 5, 10, 10),
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("Middle Lights"),
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                          child: Text(
+                            "L2 - Middle Lights",
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54),
+                          ),
+                        ),
                         ToggleSwitch(
-                          minWidth: 50.0,
+                          minWidth: 60.0,
                           minHeight: 50.0,
                           initialLabelIndex: lightM,
                           cornerRadius: 20.0,
@@ -258,14 +336,30 @@ class _LightingPageState extends State<LightingPage> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
+                ),
+                Card(
+                  margin: const EdgeInsets.fromLTRB(10, 5, 10, 10),
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("Rights Lights"),
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                          child: Text(
+                            "L3 - Right Lights",
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54),
+                          ),
+                        ),
                         ToggleSwitch(
-                          minWidth: 50.0,
+                          minWidth: 60.0,
                           minHeight: 50.0,
                           initialLabelIndex: lightR,
                           cornerRadius: 20.0,
@@ -298,8 +392,8 @@ class _LightingPageState extends State<LightingPage> {
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

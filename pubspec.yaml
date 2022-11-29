@@ -82,6 +82,7 @@ flutter:
     - assets/garage_door.json
     - assets/wave.json
     - assets/coin.json
+    - assets/garage_lights.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
