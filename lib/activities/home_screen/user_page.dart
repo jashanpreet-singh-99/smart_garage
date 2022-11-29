@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:smart_garage/activities/splash_screen.dart';
+import 'package:smart_garage/activities/user_input_screen.dart';
 import 'package:smart_garage/dialogs/profile_edit_dialog.dart';
 
 import '../../dialogs/vehicle_details_dialog.dart';
@@ -894,7 +895,16 @@ class _UserPageState extends State<UserPage> {
                                                       width: 50,
                                                       child: ElevatedButton(
                                                         onPressed: () {
-                                                          //
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        UserInputScreen(
+                                                                          postData:
+                                                                              vehicleList[index],
+                                                                        )),
+                                                          );
                                                         },
                                                         style: ButtonStyle(
                                                           shadowColor:
