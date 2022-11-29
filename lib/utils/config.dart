@@ -103,6 +103,13 @@ class Config {
     return Colors.green;
   }
 
+  Color getLightSwitchColor(String stat) {
+    if (stat == "ON") {
+      return Colors.yellow;
+    }
+    return Colors.black26;
+  }
+
   String getSwitchValueInt(int value) {
     if (value == 1) {
       return "ON";

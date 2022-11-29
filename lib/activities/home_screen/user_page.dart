@@ -648,37 +648,6 @@ class _UserPageState extends State<UserPage> {
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
-                                            children: const [
-                                              Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    10, 5, 10, 10),
-                                                child: Text(
-                                                  "Expected Service",
-                                                  style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    10, 5, 10, 5),
-                                                child: Text(
-                                                  "22-12-2022",
-                                                  style: TextStyle(
-                                                    color: Colors.black87,
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               const Padding(
                                                 padding: EdgeInsets.fromLTRB(
