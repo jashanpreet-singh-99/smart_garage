@@ -134,9 +134,12 @@ class _LightingPageState extends State<LightingPage> {
             child: Column(
               children: [
                 SizedBox(
-                  height: 250,
-                  child: Image.asset(
-                    'assets/garage_lights.png',
+                  height: 220,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Image.asset(
+                      'assets/garage_lights.png',
+                    ),
                   ),
                 ),
                 Padding(
