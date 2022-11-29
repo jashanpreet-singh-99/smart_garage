@@ -427,20 +427,20 @@ class _UserPageState extends State<UserPage> {
     return Color.lerp(Colors.red, Colors.green, percent) ?? Colors.greenAccent;
   }
 
-  double getBrakeOilHealth(dynamic val) {
+  double getAirFilterHealth(dynamic val) {
     int mils = val['Milage'] - val['AirFilter'];
     Log.log(Log.TAG_VEHICLE, "AirFilter : $mils", Log.I);
-    if (mils > 0 && mils < 40000) {
-      return 1 - (mils / 40000);
+    if (mils > 0 && mils < 15000) {
+      return 1 - (mils / 15000);
     }
     return 0;
   }
 
-  double getAirFilterHealth(dynamic val) {
+  double getBrakeOilHealth(dynamic val) {
     int mils = val['Milage'] - val['BrakeOil'];
     Log.log(Log.TAG_VEHICLE, "Brake oil: $mils", Log.I);
-    if (mils > 0 && mils < 15000) {
-      return 1 - (mils / 15000);
+    if (mils > 0 && mils < 40000) {
+      return 1 - (mils / 40000);
     }
     return 0;
   }

@@ -1,117 +1,55 @@
-import 'dart:convert';
+import 'dart:async';
 
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:toggle_switch/toggle_switch.dart';
-import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
+import 'dart:convert';
 import 'package:flutter_login/flutter_login.dart';
-import 'package:smart_garage/activities/home_screen/dash_page.dart';
+import 'package:smart_garage/activities/signup_screen.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 import '../utils/config.dart';
-import 'home_screen.dart';
-import 'package:http/http.dart' as http;
 import 'guest_screen.dart';
-import 'package:smart_garage/utils/constants.dart';
-import 'package:smart_garage/controller/simple_ui_controller.dart';
+import 'home_screen.dart';
 
+import 'package:http/http.dart' as http;
 
-class LoginView extends StatefulWidget {
-  const LoginView({Key? key}) : super(key: key);
+class LoginScreenA extends StatefulWidget {
+  const LoginScreenA({
+    Key? key,
+  }) : super(key: key);
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  State<LoginScreenA> createState() {
+    return _LoginScreenAState();
+  }
 }
-const users = {
-  'smartgarage@gmail.com': '12345',
-  '1111': '1111',
-};
 
-
-class _LoginViewState extends State<LoginView> {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
-  //String welcomeText = "Admin";
-
-  final _formKey = GlobalKey<FormState>();
-  String nologin = "";
+class _LoginScreenAState extends State<LoginScreenA> {
   Uri loginUri = Config.urlLogin;
-  int admin =0;
-  static const Duration loginTime = Duration(seconds: 1);
-  //guest
-  Future<bool> getTokenGuest(String email, String password) async {
-    final uri = Config.urlLoginGuest;
-    final headers = {'Content-Type': 'application/json'};
+  int mode = 0;
 
-    String userId = await Config.readFromStorage(Config.KEY_DEVICE_ID, "");
-    Map bData = {'email': email, 'password': password};
-    final body = json.encode(bData);
+  bool showBtn = false;
 
-    http.Response response = await http.post(uri, headers: headers, body: body);
-
-    int statusCode = response.statusCode;
-    String responseBody = response.body;
-    print('admin value insdie toek functio $admin');
-    print('name :' +nameController.text);
-    print('pass :' +passwordController.text);
-    print('Device ID :' +userId);
-    Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
-    Log.log(Log.TAG_REQUEST, responseBody, Log.I);
-    if (statusCode == 200) {
-      String t = Config.getToken(responseBody);
-      Log.log(Log.TAG_REQUEST, "Saving token Locally.", Log.I);
-      Config.saveToStorage(Config.KEY_AUTH_ID, t);
-      return true;
-    }
-    return false;
+  @override
+  void initState() {
+    super.initState();
+    Timer(const Duration(milliseconds: 1000), () {
+      setState(() {
+        showBtn = true;
+      });
+    });
   }
 
-  Future<String?> _authUserGuest(TextEditingController name, TextEditingController pass) async {
-    debugPrint('Name: ${name.text}, Password: ${pass.text}');
-    if (await getTokenGuest(name.text, pass.text)) {
-      print("password is correct");
-      Config.saveToStorage(Config.KEY_USER, name.text);
-      Config.saveToStorage(Config.KEY_PASS, pass.text);
-      Config.saveToStorage(
-          Config.KEY_ROLE, Config.ROLE_GUEST  );
-
-      return Future.delayed(const Duration(microseconds: 1)).then((_) {
-        return  Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) {
-            if (admin == 1) {
-              return const GuestScreen();
-            } else {
-              return const HomeScreen();
-            }
-          },
-        ));
-      });
-    } else {
-      print("password incorrect");
-      setState(() {
-        nologin = "User or Password is Incorrect";
-      });
-      return null;
-    }}
-
-      //login functions
   Future<bool> getToken(String email, String password) async {
     final uri = loginUri;
     final headers = {'Content-Type': 'application/json'};
 
     String userId = await Config.readFromStorage(Config.KEY_DEVICE_ID, "");
-    Map bData = {'email': email, 'password': password, 'Device': userId};
+    Map bData = {'email': email, 'password': password, "Device": userId};
     final body = json.encode(bData);
 
     http.Response response = await http.post(uri, headers: headers, body: body);
 
     int statusCode = response.statusCode;
     String responseBody = response.body;
-    print('admin value insdie toek functio $admin');
-    print('name :' +nameController.text);
-    print('pass :' +passwordController.text);
-    print('Device ID :' +userId);
     Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
     Log.log(Log.TAG_REQUEST, responseBody, Log.I);
     if (statusCode == 200) {
@@ -123,434 +61,128 @@ class _LoginViewState extends State<LoginView> {
     return false;
   }
 
-  Future<String?> _authUser(TextEditingController name, TextEditingController pass) async {
-    debugPrint('Name: ${name.text}, Password: ${pass.text}');
-    if (await getToken(name.text, pass.text)) {
-      print("password is correct");
-      Config.saveToStorage(Config.KEY_USER, name.text);
-      Config.saveToStorage(Config.KEY_PASS, pass.text);
+  Future<String?> _authUser(LoginData data) async {
+    debugPrint('Name: ${data.name}, Password: ${data.password}');
+    if (await getToken(data.name, data.password)) {
+      Config.saveToStorage(Config.KEY_USER, data.name);
+      Config.saveToStorage(Config.KEY_PASS, data.password);
       Config.saveToStorage(
-          Config.KEY_ROLE, (admin == 0) ? Config.ROLE_ADMIN : Config.ROLE_GUEST);
-
+          Config.KEY_ROLE, (mode == 0) ? Config.ROLE_ADMIN : Config.ROLE_GUEST);
+      setState(() {
+        showBtn = false;
+      });
       return Future.delayed(const Duration(microseconds: 1)).then((_) {
-        return  Navigator.of(context).pushReplacement(MaterialPageRoute(
+        return null;
+      });
+    } else {
+      return 'Email address and password combination are in correct.';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FlutterLogin(
+      title: 'Smart Garage',
+      logo: const AssetImage('assets/garage.png'),
+      onLogin: _authUser,
+      onSubmitAnimationCompleted: () {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) {
-            if (admin == 0) {
+            if (mode == 0) {
               return const HomeScreen();
             } else {
               return const GuestScreen();
             }
           },
         ));
-      });
-    } else {
-      print("password incorrect");
-      setState(() {
-        nologin = "User or Password is Incorrect";
-      });
-
-      return null;/*Future.delayed(loginTime).then((_) {
-        if (!users.containsKey(data.name)) {
-          return 'Invalid email';
-        }
-        if (users[data.name] != data.password) {
-          return 'Password does not match';
-        }
-        return null;
-      });*/
-    }
-  }
-
-  Future<String?> _signUpUser(SignupData data) {
-    debugPrint('Signup Name: ${data.name}, Password: ${data.password}');
-    return Future.delayed(loginTime).then((_) {
-      return null;
-    });
-  }
-
-  Future<String> _recoverPassword(String name) {
-    debugPrint('Name: $name');
-    return Future.delayed(loginTime).then((_) {
-      if (!users.containsKey(name)) {
-        return 'User not exists';
-      }
-      return null!;
-    });
-  }
-
-  /*//welcome text
-  void changeWelcome(int n){
-    if(n==0)
-      {
-        welcomeText = "Admin";
-      }
-
-      welcomeText = "Guest";
-
-  }
-*/
-  //login function ends
-
-  @override
-  void dispose() {
-    nameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
-
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    SimpleUIController simpleUIController = Get.find<SimpleUIController>();
-    return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        resizeToAvoidBottomInset: false,
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            if (constraints.maxWidth > 600) {
-              return _buildLargeScreen(size, simpleUIController);
-            } else {
-              return _buildSmallScreen(size, simpleUIController);
-            }
-          },
-        ),
+      },
+      userType: LoginUserType.email,
+      onRecoverPassword: (_) => Future(() => null),
+      hideForgotPasswordButton: true,
+      messages: LoginMessages(
+        userHint: 'Email address',
+        passwordHint: 'Password',
+        confirmPasswordHint: 'Confirm Password',
+        loginButton: 'LOG IN',
+        signupButton: 'SIGN UP',
+        forgotPasswordButton: '',
+        recoverPasswordButton: 'UNAVAILABLE',
+        goBackButton: 'GO BACK',
+        confirmPasswordError: 'Not match!',
+        recoverPasswordDescription:
+            'This feature is not available for you. Please contact the Application service provider.',
       ),
-    );
-  }
-
-  /// For large screens
-  Widget _buildLargeScreen(
-      Size size,
-      SimpleUIController simpleUIController,
-      ) {
-    return Row(
       children: [
-        Expanded(
-          flex: 4,
-          child: RotatedBox(
-            quarterTurns: 3,
-            child: Lottie.asset(
-              'assets/coin.json',
-              height: size.height * 0.3,
-              width: double.infinity,
-              fit: BoxFit.fill,
-            ),
-          ),
-        ),
-        SizedBox(width: size.width * 0.06),
-        Expanded(
-          flex: 5,
-          child: _buildMainBody(
-            size,
-            simpleUIController,
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// For Small screens
-  Widget _buildSmallScreen(
-      Size size,
-      SimpleUIController simpleUIController,
-      ) {
-    return Center(
-      child: _buildMainBody(
-        size,
-        simpleUIController,
-      ),
-    );
-  }
-
-  /// Main Body
-  Widget _buildMainBody(
-      Size size,
-      SimpleUIController simpleUIController,
-      ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment:
-      size.width > 600 ? MainAxisAlignment.center : MainAxisAlignment.start,
-      children: [
-        size.width > 600
-            ? Container()
-            : Lottie.asset(
-          'assets/wave.json',
-          height: size.height * 0.2,
-          width: size.width,
-          fit: BoxFit.fill,
-        ),
-        SizedBox(
-          height: size.height * 0.03,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 20.0),
-          child: Text(
-            'Login',
-            style: kLoginTitleStyle(size),
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 20.0),
-          child: Text(
-            'Welcome Back',
-            style: kLoginSubtitleStyle(size),
-          ),
-        ),
-        SizedBox(
-          height: size.height * 0.03,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 20.0, right: 20),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                //no user label
-                Text(
-                  nologin,
-                  style: TextStyle(color: Colors.red),
-                  textAlign: TextAlign.center,
-
-                ),
-                SizedBox(
-                  height: size.height * 0.03,
-                ),
-                /// username or Gmail
-                TextFormField(
-                  style: kTextFormFieldStyle(),
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.person),
-                    hintText: 'Email',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                    ),
-                  ),
-                  controller: nameController,
-                  // The validator receives the text that the user has entered.
-                  validator: (value) {
-                    final bool isValid = EmailValidator.validate(value!);
-                    if( isValid == true)
-                    {return null; }
-                    else
-                      return 'please enter valid email';
+        showBtn
+            ? Padding(
+                padding: const EdgeInsets.fromLTRB(0, 275, 0, 0),
+                child: MaterialButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SignUpView1()),
+                    );
                   },
-                ),
-                // SizedBox(
-                //   height: size.height * 0.02,
-                // ),
-                // TextFormField(
-                //   controller: emailController,
-                //   decoration: const InputDecoration(
-                //     prefixIcon: Icon(Icons.email_rounded),
-                //     hintText: 'gmail',
-                //     border: OutlineInputBorder(
-                //       borderRadius: BorderRadius.all(Radius.circular(15)),
-                //     ),
-                //   ),
-                //   // The validator receives the text that the user has entered.
-                //   validator: (value) {
-                //     if (value == null || value.isEmpty) {
-                //       return 'Please enter gmail';
-                //     } else if (!value.endsWith('@gmail.com')) {
-                //       return 'please enter valid gmail';
-                //     }
-                //     return null;
-                //   },
-                // ),
-                SizedBox(
-                  height: size.height * 0.02,
-                ),
-
-                /// password
-                Obx(
-                      () => TextFormField(
-                    style: kTextFormFieldStyle(),
-                    controller: passwordController,
-                    obscureText: simpleUIController.isObscure.value,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.lock_open),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          simpleUIController.isObscure.value
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                        ),
-                        onPressed: () {
-                          simpleUIController.isObscureActive();
-                        },
-                      ),
-                      hintText: 'Password',
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  splashColor: Colors.cyan,
+                  color: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.fromLTRB(30, 8, 30, 8),
+                    child: Text(
+                      'SIGN UP',
+                      style: TextStyle(
+                        color: Colors.cyan,
+                        fontSize: 14,
                       ),
                     ),
-                    // The validator receives the text that the user has entered.
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
-                      } else if (value.length < 5) {
-                        return 'at least enter 5 characters';
-                      } else if (value.length > 13) {
-                        return 'maximum character is 13';
-                      }
-                      return null;
-                    },
                   ),
                 ),
-                SizedBox(
-                  height: size.height * 0.01,
-                ),
-                //toggle switch
-                ToggleSwitch(
-                  minWidth: 100.0,
-                  minHeight: 50.0,
-                  initialLabelIndex: admin,
-                  cornerRadius: 20.0,
-                  activeFgColor: Colors.white,
-                  inactiveBgColor: Colors.grey,
-                  inactiveFgColor: Colors.white,
-                  totalSwitches: 2,
-                  labels: ['Admin', 'Guest'],
-                  iconSize: 30.0,
-                  activeBgColors: const [
-                    [Colors.deepPurpleAccent],
-                    [Colors.deepPurpleAccent]
-                  ],
-                  animate:
-                  true, // with just animate set to true, default curve = Curves.easeIn
-                  curve: Curves
-                      .bounceInOut, // animate must be set to true when using custom curve
-                  onToggle: (index) {
-                    if (index == 1)  {
-                      setState(() {
-
-                        admin =1;
-                        loginUri = Config.urlLoginGuest;
-                        Log.log(
-                            Log.TAG_REQUEST, "Switching to $index Guest", Log.I);
-                      });
-
-                      // call guest
-                    } else if (index == 0) {
-                      setState(() {
-                        admin =0;
-                        loginUri = Config.urlLogin;
-                        Log.log(
-                            Log.TAG_REQUEST, "Switching to $index Family", Log.I);
-                      });
-
-
-                      // call admin
-                    }
-                    //print('switched to: $index');
-                  },
-                ),
-                Text(
-                  'Creating an account means you\'re okay with our Terms of Services and our Privacy Policy',
-                  style: kLoginTermsAndPrivacyStyle(size),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  height: size.height * 0.02,
-                ),
-
-                /// Login Button
-                loginButton(
-
-                ),
-                SizedBox(
-                  height: size.height * 0.03,
-                ),
-
-                /// Navigate To Login Screen
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                    nameController.clear();
-                    emailController.clear();
-                    passwordController.clear();
-                    _formKey.currentState?.reset();
-                    simpleUIController.isObscure.value = true;
-                  },
-                  child: RichText(
-                    text: TextSpan(
-                      text: 'Don\'t have an account?',
-                      style: kHaveAnAccountStyle(size),
-                      children: [
-                        TextSpan(
-                          text: " Sign up",
-                          style: kLoginOrSignUpTextStyle(
-                            size,
-                          ),
-                        ),
-                      ],
+              )
+            : const Padding(
+                padding: EdgeInsets.all(10),
+              ),
+        showBtn
+            ? Padding(
+                padding: const EdgeInsets.fromLTRB(0, 400, 0, 0),
+                child: Card(
+                  elevation: 4,
+                  child: SizedBox(
+                    height: 40,
+                    child: ToggleSwitch(
+                      initialLabelIndex: 0,
+                      totalSwitches: 2,
+                      cornerRadius: 15.0,
+                      radiusStyle: true,
+                      activeBgColor: const [Colors.white],
+                      activeFgColor: Colors.cyan,
+                      inactiveBgColor: Colors.grey,
+                      inactiveFgColor: Colors.black38,
+                      labels: const ['Admin', 'Guest'],
+                      onToggle: (index) {
+                        if (index == 1) {
+                          mode = 1;
+                          loginUri = Config.urlLoginGuest;
+                          Log.log(Log.TAG_REQUEST, "Switching to $index Guest",
+                              Log.I);
+                        } else {
+                          mode = 0;
+                          loginUri = Config.urlLogin;
+                          Log.log(Log.TAG_REQUEST, "Switching to $index Family",
+                              Log.I);
+                        }
+                      },
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        ),
+                ))
+            : const Padding(
+                padding: EdgeInsets.all(10),
+              ),
       ],
-    );
-  }
-
-  // Login Button
-  Widget loginButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 55,
-      child: ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Colors.deepPurpleAccent),
-          shape: MaterialStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-          ),
-        ),
-        onPressed: () async {
-          // Validate returns true if the form is valid, or false otherwise.
-          print('toggle value $admin');
-          print('button pressed');
-          setState(() {
-            nologin ="";
-          });
-
-          if(admin == 0) {
-            _authUser(nameController, passwordController);
-          }
-          else if(admin == 1) {
-            _authUserGuest(nameController, passwordController);
-          }
-          print('toggle value $admin');
-          print('url $loginUri');
-          //if (_formKey.currentState!.validate()) {
-
-
-         // if( await getToken(emailController.text, passwordController.text)) {
-            //print('authetication completed');
-            //_authUser(nameController,passwordController);
-            //Navigator.push(
-              //context,
-              //MaterialPageRoute(builder: (context) => HomeScreen()),
-            //);
-         // }
-          //_authUser();
-
-            // ... Navigate To your Home Page
-          //}
-        },
-        child: const Text('Login'),
-      ),
     );
   }
 }
