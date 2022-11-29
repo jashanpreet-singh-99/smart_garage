@@ -55,6 +55,9 @@ class _SplashScreenState extends State<SplashScreen> {
           OneSignal.shared.setNotificationOpenedHandler((openedResult) {
             var data = openedResult.notification.additionalData;
             Log.log(Log.TAG_OPEN_SIGNAL, "Notification : $data", Log.I);
+            if (data!['CarID'] == "None") {
+              return;
+            }
             notificationOnly = true;
             globals.appNavigator.currentState?.push(MaterialPageRoute(
                 builder: (context) => UserInputScreen(postData: data)));
