@@ -140,14 +140,17 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
     return Scaffold(
       body: Center(
         child: Card(
-          elevation: 50,
+          margin: const EdgeInsets.fromLTRB(40, 0, 40, 0),
+          elevation: 10,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
           shadowColor: Colors.black,
           child: SizedBox(
-            width: 300,
-            height: 600,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(10.0),
@@ -161,7 +164,28 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
                       },
                     ),
                   ),
-                  const Padding(padding: EdgeInsets.all(1.0)),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                    child: Text(
+                      "GARAGE DOOR CONTROLS",
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
+                    child: Container(
+                      height: 2,
+                      decoration: BoxDecoration(
+                          color: Colors.black87,
+                          border: Border.all(),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(2))),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: ElevatedButton(
@@ -172,8 +196,24 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
                       style: ButtonStyle(
                         backgroundColor:
                             MaterialStateProperty.all<Color>(garageOpenBtn),
+                        shadowColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        )),
                       ),
-                      child: const Text("OPEN"),
+                      child: const Padding(
+                        padding: EdgeInsets.fromLTRB(15, 12, 15, 12),
+                        child: Text(
+                          "OPEN",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   Padding(
@@ -186,8 +226,24 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
                       style: ButtonStyle(
                         backgroundColor:
                             MaterialStateProperty.all<Color>(garageStopBtn),
+                        shadowColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        )),
                       ),
-                      child: const Text("STOP"),
+                      child: const Padding(
+                        padding: EdgeInsets.fromLTRB(15, 12, 15, 12),
+                        child: Text(
+                          "STOP",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   Padding(
@@ -200,12 +256,28 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
                       style: ButtonStyle(
                         backgroundColor:
                             MaterialStateProperty.all<Color>(garageCloseBtn),
+                        shadowColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        )),
                       ),
-                      child: const Text("CLOSE"),
+                      child: const Padding(
+                        padding: EdgeInsets.fromLTRB(15, 12, 15, 12),
+                        child: Text(
+                          "CLOSE",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(10.0),
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
                     child: ElevatedButton(
                       onPressed: () {},
                       style: ButtonStyle(

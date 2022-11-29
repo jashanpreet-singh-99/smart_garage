@@ -570,7 +570,7 @@ class _UserPageState extends State<UserPage> {
                 ),
                 Card(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
                   elevation: 5,
                   shadowColor: Colors.black,
@@ -582,7 +582,7 @@ class _UserPageState extends State<UserPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 1),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               children: const [
@@ -1044,7 +1044,7 @@ class _UserPageState extends State<UserPage> {
                 ),
                 Card(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
                   elevation: 5,
                   shadowColor: Colors.black,
@@ -1056,7 +1056,7 @@ class _UserPageState extends State<UserPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 1),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               children: const [
