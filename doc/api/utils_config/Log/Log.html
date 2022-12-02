@@ -74,6 +74,7 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">static void log(String tag, String message, String type) {
   if (DEBUG) {
+    &#47;&#47; ignore: avoid_print
     print(&quot;$tag : $type : $message&quot;);
   }
 }</code></pre>
@@ -126,10 +127,14 @@
           <li><a href="../../utils_config/Log/DEBUG-constant.html">DEBUG</a></li>
           <li><a href="../../utils_config/Log/E-constant.html">E</a></li>
           <li><a href="../../utils_config/Log/I-constant.html">I</a></li>
+          <li><a href="../../utils_config/Log/TAG_DATE-constant.html">TAG_DATE</a></li>
+          <li><a href="../../utils_config/Log/TAG_DIALOG-constant.html">TAG_DIALOG</a></li>
+          <li><a href="../../utils_config/Log/TAG_DROPDOWN-constant.html">TAG_DROPDOWN</a></li>
           <li><a href="../../utils_config/Log/TAG_OPEN_SIGNAL-constant.html">TAG_OPEN_SIGNAL</a></li>
           <li><a href="../../utils_config/Log/TAG_REQUEST-constant.html">TAG_REQUEST</a></li>
           <li><a href="../../utils_config/Log/TAG_SPLASH-constant.html">TAG_SPLASH</a></li>
           <li><a href="../../utils_config/Log/TAG_STORAGE-constant.html">TAG_STORAGE</a></li>
+          <li><a href="../../utils_config/Log/TAG_VEHICLE-constant.html">TAG_VEHICLE</a></li>
 </ol>
 
   </div><!--/.sidebar-offcanvas-->
