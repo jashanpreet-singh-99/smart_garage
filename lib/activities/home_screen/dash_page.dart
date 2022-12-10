@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -21,13 +23,15 @@ class _DashPageState extends State<DashPage> {
   String garageDoorStatus = "CLOSED";
   String drivewayLights = "OFF";
   String garageIndoorLights = "OFF";
-  double coLevel = 0.1;
+  double coLevel = 0.0;
   Color coColor = Colors.green;
 
   Color indoorLightColor = Colors.black26;
   Color extLightColor = Colors.black26;
 
   bool disposed = false;
+
+  Timer? timer;
 
   void getDoorStatus() async {
     final uri = Config().urlDoor;
@@ -126,11 +130,15 @@ class _DashPageState extends State<DashPage> {
     getDoorStatus();
     getLights();
     getCoValue();
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      getCoValue();
+    });
   }
 
   @override
   void dispose() {
     disposed = true;
+    timer?.cancel();
     super.dispose();
   }
 
@@ -156,7 +164,7 @@ class _DashPageState extends State<DashPage> {
                     percent: coLevel,
                     progressColor: coColor,
                     circularStrokeCap: CircularStrokeCap.round,
-                    animation: true,
+                    animation: false,
                     center: Text(
                       "${(coLevel * 100).round()} PPM",
                       style: const TextStyle(

@@ -25,10 +25,44 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
   Color connectionStat = Colors.blue;
 
   bool firstRun = true;
-
+  double animTime = 0.0;
   bool disposed = false;
 
   late AnimationController animationController;
+
+  void getDoorAnimation() async {
+    final uri = Config().urlDoorA;
+    final headers = {'Content-Type': 'application/json'};
+
+    http.Response response = await http.get(
+      uri,
+      headers: headers,
+    );
+
+    int statusCode = response.statusCode;
+    String responseBody = response.body;
+    Log.log(Log.TAG_REQUEST, "$statusCode", Log.I);
+    Log.log(Log.TAG_REQUEST, responseBody, Log.I);
+    if (statusCode == 200) {
+      Map<String, dynamic> jsonObj = jsonDecode(responseBody);
+      try {
+        if (!disposed) {
+          setState(() {
+            animTime = jsonObj['DoorAnim'];
+            getDoorStatus();
+          });
+        }
+      } on Exception catch (e) {
+        Log.log(Log.TAG_REQUEST, "Error : $e", Log.E);
+      }
+    } else if (statusCode == 403) {
+      Log.log(Log.TAG_REQUEST, "Refresh Token", Log.I);
+      if (await Config.refreshToken()) {
+        Log.log(Log.TAG_REQUEST, "Calling Again using new Token", Log.I);
+        getDoorAnimation();
+      }
+    }
+  }
 
   void getDoorStatus() async {
     final uri = Config().urlDoor;
@@ -79,11 +113,19 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
     }
     switch (nStat) {
       case 0:
-        animationController.stop();
+        if (firstRun) {
+          animationController.animateTo(animTime,
+              duration: const Duration(milliseconds: 100));
+        } else {
+          animationController.stop();
+        }
+
         garageStopBtn = Colors.cyan;
         break;
       case -1:
         if (firstRun) {
+          animationController.animateTo(animTime,
+              duration: const Duration(milliseconds: 100));
         } else {
           animationController.reverse();
         }
@@ -91,8 +133,8 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
         break;
       default:
         if (firstRun) {
-          animationController.animateTo(animationController.upperBound,
-              duration: const Duration(milliseconds: 500));
+          animationController.animateTo(animTime,
+              duration: const Duration(milliseconds: 100));
         } else {
           animationController.forward();
         }
@@ -133,8 +175,8 @@ class _DoorPageState extends State<DoorPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    getDoorStatus();
     animationController = AnimationController(vsync: this);
+    getDoorAnimation();
   }
 
   @override

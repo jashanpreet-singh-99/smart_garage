@@ -8,6 +8,7 @@ class Config {
   static Uri urlLogin = Uri.parse("http://4.229.225.201:5000/login");
   static Uri urlLoginGuest = Uri.parse("http://4.229.225.201:5000/login_guest");
   Uri urlDoor = Uri.parse("http://4.229.225.201:5000/door?token=$token");
+  Uri urlDoorA = Uri.parse("http://4.229.225.201:5000/door_anim?token=$token");
   Uri urlLight = Uri.parse("http://4.229.225.201:5000/light?token=$token");
   Uri urlCo = Uri.parse("http://4.229.225.201:5000/co?token=$token");
   Uri urlValid = Uri.parse("http://4.229.225.201:5000/?token=$token");
