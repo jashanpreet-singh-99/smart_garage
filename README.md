@@ -16,7 +16,7 @@ The combination of the Flask API, cloud platform, and 3D Simulator showcases the
 
 ## Design
 
-<img src="https://raw.githubusercontent.com/jashanpreet-singh-99/smart_garage/master/Picture1.png" width=300 align="center"/>
+![img alt ><](https://raw.githubusercontent.com/jashanpreet-singh-99/smart_garage/master/Picture1.png)
 
 ## Features
 
@@ -28,7 +28,7 @@ The combination of the Flask API, cloud platform, and 3D Simulator showcases the
 
 ## Control and Monitor Garage Door
 
-<img src="https://raw.githubusercontent.com/jashanpreet-singh-99/smart_garage/master/Door.png" width="300" align="center"/>
+<img src="https://raw.githubusercontent.com/jashanpreet-singh-99/smart_garage/master/Door.png" width="300"/>
 
 Once the user has successfully logged into their account, they gain the ability to conveniently operate their garage door through a user-friendly interface. The interface presents the user with intuitive buttons for both opening and closing the door, ensuring seamless control over the door's movements.
 
@@ -43,7 +43,7 @@ As per user requirement, lights in the garage and driveway can be controlled usi
 
 ## Control and Monitor Garage Lighting
 
-<img src="https://raw.githubusercontent.com/jashanpreet-singh-99/smart_garage/master/Lights'.png" width="300" align="center"/>
+<img src="https://raw.githubusercontent.com/jashanpreet-singh-99/smart_garage/master/Lights'.png" width="300"/>
 
 The utilization of this application offers a secure and efficient solution to the potential risks and hazards associated with entering a dark room, particularly in scenarios such as garages. By granting users the capability to remotely operate the lighting system, it empowers them with the freedom to enter their garages safely. This remote control functionality becomes particularly valuable when considering situations where users may have cameras installed within their garages. Oftentimes, due to nighttime or low-light conditions, clear and accurate visual communication becomes challenging. However, with the ability to remotely activate the lights through the application, users can enhance visibility within the garage, facilitating improved clarity and ensuring a safer environment.
 
@@ -51,7 +51,7 @@ The application further enhances convenience by enabling users to individually c
 
 ## Monitor CO level in Garage
 
-<img src="https://raw.githubusercontent.com/jashanpreet-singh-99/smart_garage/master/CO%20levels.png"  width="300" align="center"/>
+<img src="https://raw.githubusercontent.com/jashanpreet-singh-99/smart_garage/master/CO%20levels.png"  width="300"/>
 
 Carbon monoxide (CO) poses significant health risks to humans, especially in enclosed spaces such as a garage. Prolonged exposure to elevated levels of CO can have severe consequences for individuals. When an individual idles a car in a garage, toxic gases, including CO, can accumulate, leading to potential harm over time.
 
@@ -63,7 +63,7 @@ By combining advanced monitoring capabilities and remote control functionalities
 
 ## Guest Access
 
-<img src="https://raw.githubusercontent.com/jashanpreet-singh-99/smart_garage/master/guest%20access.png"  width="300" align="center"/>
+<img src="https://raw.githubusercontent.com/jashanpreet-singh-99/smart_garage/master/guest%20access.png"  width="300"/>
 
 In order to enhance both convenience and security for our residents and their guests, our smart garage system incorporates a unique feature that allows temporary access to be granted to visitors. When guests arrive, our intuitive mobile application empowers residents to generate a personalized and secure UID (Unique Identifier) along with a password specifically for their guests. This customized access credential enables guests to utilize the smart garage system seamlessly during their stay.
 
@@ -73,7 +73,7 @@ Our top priority is to deliver a seamless and secure experience, combining advan
 
 ## Vehicle Maintenance and Reminder System
 
-<img src="https://raw.githubusercontent.com/jashanpreet-singh-99/smart_garage/master/vehicle%20management.png"  width="300" align="center">
+<img src="https://raw.githubusercontent.com/jashanpreet-singh-99/smart_garage/master/vehicle%20management.png"  width="300">
 
 The Vehicle Maintenance system encompasses various essential tasks such as engine oil change, brake oil change, air filter change, and tire change. These maintenance activities play a crucial role in ensuring the optimal performance and longevity of a vehicle.
 
