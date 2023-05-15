@@ -73,7 +73,7 @@ Our top priority is to deliver a seamless and secure experience, combining advan
 
 ## Vehicle Maintenance and Reminder System
 
-<img src="https://raw.githubusercontent.com/jashanpreet-singh-99/smart_garage/master/vehicle%20management.png"  width="300">
+<img src="https://raw.githubusercontent.com/jashanpreet-singh-99/smart_garage/master/vehicle%20management.png"  width="300"/>
 
 The Vehicle Maintenance system encompasses various essential tasks such as engine oil change, brake oil change, air filter change, and tire change. These maintenance activities play a crucial role in ensuring the optimal performance and longevity of a vehicle.
 
